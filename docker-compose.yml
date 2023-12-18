@@ -1,0 +1,53 @@
+version: "3.9"
+
+###############################################################################
+# configure the project services
+services:
+
+  #############################################################################
+  # configure the Go backend container
+  backend:
+    build: backend/
+    container_name: backend-prod
+    restart: unless-stopped
+    ports:
+      - "4001:4000"
+    links:
+      - db
+
+  #############################################################################
+  # configure the Angular frontend
+  frontend:
+    build: frontend/
+    container_name: frontend-prod
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    links:
+      - backend
+
+  #############################################################################
+  # configure the MySQL container
+  db:
+    image: mysql:8
+    container_name: db-prod
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d/:ro
+    ports:
+      - "3200:3306"
+    restart: unless-stopped
+    environment:
+      MYSQL_USER: backend
+      MYSQL_PASSWORD_FILE: /run/secrets/db_pw
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_pw
+    secrets:
+      - db_pw
+      - db_root_pw
+
+###############################################################################
+# configure the project secrets
+secrets:
+  db_pw:
+    file: ./secrets/db_pw
+  db_root_pw:
+    file: ./secrets/db_root_pw

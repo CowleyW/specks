@@ -1,0 +1,6 @@
+# Any Dockerfile or Dockerfile.dev in subdirectories
+**/Dockerfile*
+
+**/README.md
+**/.git
+**/.gitignore

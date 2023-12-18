@@ -1,0 +1,28 @@
+## Project Secrets
+/secrets
+
+
+## Angular Frontend
+
+/frontend/dist
+/frontend/tmp
+/frontend/out-tsc
+
+/frontend/node_modules/*
+
+/frontend/.angular/*
+
+# Go Backend
+/backend/*.exe
+/backend/*.exe~
+/backend/*.dll
+/backend/*.so
+/backend/*.dylib
+
+/backend/*.test
+
+/backend/*.out
+
+## IDEs
+**/.idea/*
+**/.vscode/*

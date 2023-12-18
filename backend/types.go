@@ -1,0 +1,28 @@
+package main
+
+type DataType int
+
+const (
+	TINYINT DataType = iota
+	SMALLINT
+	MEDIUMINT
+	INT
+	BIGINT
+	DECIMAL
+	FLOAT
+	DOUBLE
+	BIT
+	DATE
+	TIME
+	DATETIME
+	TIMESTAMP
+	YEAR
+	CHAR
+	VARCHAR
+	BINARY
+	VARBINARY
+	BLOB
+	TEXT
+	ENUM
+	SET
+)
