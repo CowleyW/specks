@@ -1,0 +1,11 @@
+<div [formGroup]="schema">
+  <input type="text" formControlName="tableName">
+  <ng-container *ngFor="let column of getColumns(); let ci = index">
+    <div [formGroup]="column">
+      <input type="text" formControlName="columnName">
+      <input type="text" formControlName="columnType">
+      <button (click)="removeColumn(ci)">Remove</button>
+    </div>
+  </ng-container>
+  <button (click)="addNewColumn()">Add Column</button>
+</div>

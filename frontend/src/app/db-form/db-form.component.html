@@ -1,0 +1,12 @@
+<form [formGroup]="dbForm">
+  <div formArrayName="schemas">
+    <ng-container *ngFor="let schema of getSchemas(); let si = index">
+      <app-schema-entry [schema]="schema"/>
+      <button (click)="removeSchema(si)">Remove Table</button>
+    </ng-container>
+  </div>
+
+  <button (click)="addNewSchema()">Add Table</button>
+</form>
+
+<pre>{{ dbForm.getRawValue() | json }}</pre>
