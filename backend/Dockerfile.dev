@@ -1,0 +1,21 @@
+# syntax=docker/dockerfile:1
+
+FROM golang:1.19-alpine AS build
+
+ENV CGO_ENABLED=0     \
+    GO111MODULE=on    \
+    PROJECT_DIR=/app  \
+    GOOS=linux
+
+WORKDIR /app
+
+COPY go.mod go.sum ./
+RUN go mod download
+
+COPY *.go ./
+COPY . ./
+
+EXPOSE 4000
+
+RUN go install -mod=mod github.com/githubnemo/CompileDaemon
+ENTRYPOINT CompileDaemon -build="go build -o go-backend" -command="./go-backend"

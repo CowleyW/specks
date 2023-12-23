@@ -25,6 +25,8 @@ services:
       - "8080:80"
     links:
       - backend
+    environment:
+      - BACKEND_URL=http://backend:4000
 
   #############################################################################
   # configure the MySQL container

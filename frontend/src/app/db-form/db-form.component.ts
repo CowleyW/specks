@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import {FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {CommonModule} from "@angular/common";
 import {SchemaEntryComponent} from "../schema-entry/schema-entry.component";
+import {ApiService} from "../services/api.service";
 
 @Component({
   selector: 'app-db-form',
@@ -15,7 +16,10 @@ export class DbFormComponent {
     schemas: this.formBuilder.array([])
   });
 
-  constructor(private formBuilder: FormBuilder) {
+  api: ApiService;
+
+  constructor(private formBuilder: FormBuilder, api: ApiService) {
+    this.api = api;
     this.addNewSchema();
   }
 

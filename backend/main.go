@@ -7,7 +7,7 @@ import (
 )
 
 func handler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Handler Func called!")
+	fmt.Println("chnge")
 	_, err := fmt.Fprint(w, "Hello, World!")
 	if err != nil {
 		return

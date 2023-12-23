@@ -2,4 +2,7 @@
   <select formControlName="columnType">
     <option *ngFor="let t of types" [value]="t">{{JSON.stringify(t)}}</option>
   </select>
+
+  <label for="columnUnique">Unique</label>
+  <input type="checkbox" formControlName="columnUnique" id="columnUnique"/>
 </ng-container>
