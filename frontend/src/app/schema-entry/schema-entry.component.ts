@@ -3,6 +3,8 @@ import {FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Val
 import {NgForOf} from "@angular/common";
 import {TypeModifierComponent} from "../db-form/type-modifier/type-modifier.component";
 import {ColumnType} from "../services/type.service";
+import {TablesService} from "../services/tables.service";
+import {ReferenceEntryComponent} from "../db-form/reference-entry/reference-entry.component";
 
 @Component({
   selector: 'app-schema-entry',
@@ -10,33 +12,15 @@ import {ColumnType} from "../services/type.service";
   imports: [
     NgForOf,
     ReactiveFormsModule,
-    TypeModifierComponent
+    TypeModifierComponent,
+    ReferenceEntryComponent
   ],
   templateUrl: './schema-entry.component.html',
   styleUrl: './schema-entry.component.css'
 })
 export class SchemaEntryComponent {
-  @Input() schema!: FormGroup;
+  @Input() table!: FormGroup;
+  @Input() tableIdx!: number;
 
-  getColumns(): FormGroup[] {
-    return (this.schema.get('columns') as FormArray).controls as FormGroup[];
-  }
-
-  addNewColumn() {
-    let columnForm = this.formBuilder.group({
-      columnName: ['', Validators.required],
-      columnType: [null, Validators.required],
-      columnUnique: [false, Validators.required]
-    });
-
-    let cols = this.schema.get('columns') as FormArray;
-    cols.push(columnForm);
-  }
-
-  removeColumn(columnIndex: number): void {
-    (this.schema.get('columns') as FormArray).removeAt(columnIndex);
-  }
-
-  constructor(private formBuilder: FormBuilder) {
-  }
+  constructor(protected tables: TablesService) {}
 }

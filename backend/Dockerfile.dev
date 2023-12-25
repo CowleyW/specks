@@ -18,4 +18,4 @@ COPY . ./
 EXPOSE 4000
 
 RUN go install -mod=mod github.com/githubnemo/CompileDaemon
-ENTRYPOINT CompileDaemon -build="go build -o go-backend" -command="./go-backend"
+ENTRYPOINT CompileDaemon -build="go build -o ./build/go-backend" -command=".//build/go-backend"

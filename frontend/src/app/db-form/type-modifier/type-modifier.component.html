@@ -1,8 +1,11 @@
 <ng-container [formGroup]="column">
-  <select formControlName="columnType">
-    <option *ngFor="let t of types" [value]="t">{{JSON.stringify(t)}}</option>
+  <select formControlName="columnType" id="columnType{{tableIdx}}({{columnIdx}})">
+    <option *ngFor="let t of tables.types" [value]="JSON.stringify(t)">{{t.name}}</option>
   </select>
 
-  <label for="columnUnique">Unique</label>
-  <input type="checkbox" formControlName="columnUnique" id="columnUnique"/>
+  <label for="columnPrimaryKey{{tableIdx}}({{columnIdx}})">Primary Key</label>
+  <input type="checkbox" formControlName="columnPrimaryKey" id="columnPrimaryKey{{tableIdx}}({{columnIdx}})"/>
+
+  <label for="columnUnique{{tableIdx}}({{columnIdx}})">Unique</label>
+  <input type="checkbox" formControlName="columnUnique" id="columnUnique{{tableIdx}}({{columnIdx}})"/>
 </ng-container>

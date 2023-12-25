@@ -13,6 +13,7 @@
 /frontend/.angular/*
 
 # Go Backend
+/backend/build
 /backend/*.exe
 /backend/*.exe~
 /backend/*.dll

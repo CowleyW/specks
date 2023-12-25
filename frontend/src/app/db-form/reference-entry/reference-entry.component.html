@@ -1,0 +1,13 @@
+<div [formGroup]="reference">
+  <input type="text" formControlName="referenceName" id="referenceName{{tableIdx}}({{referenceIdx}})"/>
+
+  <select formControlName="referenceColumn" id="referenceColumn{{tableIdx}}({{referenceIdx}})">
+    <ng-container *ngFor="let table of tables.getTables(); let ti = index">
+      <option *ngFor="let column of tables.getColumns(ti); let ci = index" [value]="ti + '-' + ci">
+        {{table.get('tableName')?.value}}: {{column.get('columnName')?.value}}
+      </option>
+    </ng-container>
+  </select>
+
+  <button (click)="tables.removeReference(tableIdx, referenceIdx)">Remove</button>
+</div>
