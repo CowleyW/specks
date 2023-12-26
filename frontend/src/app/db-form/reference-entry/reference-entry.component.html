@@ -9,6 +9,9 @@
     </ng-container>
   </select>
 
+  <label for="referencePrimaryKey{{tableIdx}}({{referenceIdx}})">Primary Key</label>
+  <input type="checkbox" formControlName="referencePrimaryKey" id="referencePrimaryKey{{tableIdx}}({{referenceIdx}})"/>
+
   <label for="referenceUnique{{tableIdx}}({{referenceIdx}})">Unique</label>
   <input type="checkbox" formControlName="referenceUnique" id="referenceUnique{{tableIdx}}({{referenceIdx}})"/>
 

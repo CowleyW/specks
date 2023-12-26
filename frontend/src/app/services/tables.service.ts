@@ -64,6 +64,7 @@ export class TablesService {
       referenceColumn: [null, Validators.required],
       tableIndex: ['', Validators.required],
       columnIndex: ['', Validators.required],
+      referencePrimaryKey: [false, Validators.required],
       referenceUnique: [false, Validators.required]
     });
   }
@@ -91,16 +92,6 @@ export class TablesService {
 
   addNewColumn(tableIndex: number) {
     let columnForm = this.newColumnForm(tableIndex);
-
-    columnForm.get('columnPrimaryKey')!.valueChanges.subscribe((value) => {
-      if (value) {
-        columnForm.get('columnUnique')!.setValue(true);
-        columnForm.get('columnUnique')!.disable();
-      } else {
-        columnForm.get('columnUnique')!.setValue(false);
-        columnForm.get('columnUnique')!.enable();
-      }
-    });
 
     const table = this.getTable(tableIndex);
     let cols = table.get('columns') as FormArray;
