@@ -82,6 +82,12 @@ export class TablesService {
     return this.getTables()[tableIndex];
   }
 
+  getPrimaryKeys(tableIndex: number): FormGroup[] {
+    const cols: FormGroup[] = this.getColumns(tableIndex).filter((col) => col.get('columnPrimaryKey')!.value);
+    console.log(cols.length);
+    return cols;
+  }
+
   removeTable(tableIndex: number): void {
     (this.tablesForm.get('tables') as FormArray).removeAt(tableIndex);
   }
