@@ -63,7 +63,8 @@ export class TablesService {
       referenceName: [`Reference ${referenceNum}`, Validators.required],
       referenceColumn: [null, Validators.required],
       tableIndex: ['', Validators.required],
-      columnIndex: ['', Validators.required]
+      columnIndex: ['', Validators.required],
+      referenceUnique: [false, Validators.required]
     });
   }
 

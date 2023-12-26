@@ -9,5 +9,8 @@
     </ng-container>
   </select>
 
+  <label for="referenceUnique{{tableIdx}}({{referenceIdx}})">Unique</label>
+  <input type="checkbox" formControlName="referenceUnique" id="referenceUnique{{tableIdx}}({{referenceIdx}})"/>
+
   <button (click)="tables.removeReference(tableIdx, referenceIdx)">Remove</button>
 </div>
