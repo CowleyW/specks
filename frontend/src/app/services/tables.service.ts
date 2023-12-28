@@ -134,4 +134,29 @@ export class TablesService {
     const table = this.getTable(tableIndex);
     (table.get('references') as FormArray).removeAt(referenceIndex);
   }
+
+  toJSON() {
+    return this.getTables().map((table: FormGroup, idx: number) => {
+      return {
+        tableName: table.get('tableName')!.value,
+        columns: this.getColumns(idx).map((c: FormGroup) => {
+          return {
+            columnName: c.get('columnName')!.value,
+            columnType: JSON.parse(c.get('columnType')!.value),
+            columnPrimaryKey: c.get('columnPrimaryKey')!.value,
+            columnUnique: c.get('columnUnique')!.value
+          };
+        }),
+        references: this.getReferences(idx).map((r: FormGroup) => {
+          return {
+            referenceName: r.get('referenceName')!.value,
+            tableIndex: r.get('tableIndex')!.value,
+            columnIndex: r.get('columnIndex')!.value,
+            referencePrimaryKey: r.get('referencePrimaryKey')!.value,
+            referenceUnique: r.get('referenceUnique')!.value
+          };
+        })
+      };
+    });
+  }
 }

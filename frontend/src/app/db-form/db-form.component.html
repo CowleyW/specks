@@ -11,4 +11,4 @@
 
 <pre>{{ dbForm.getRawValue() | json }}</pre>
 
-<button (click)="api.getData()">Generate Data</button>
+<button (click)="api.generateData(tables.toJSON())">Generate Data</button>
