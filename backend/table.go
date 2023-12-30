@@ -9,7 +9,7 @@ type ColumnType struct {
 }
 
 type DataType interface {
-	string | uint64 | float64
+	string | int | uint | float64
 }
 
 type Column struct {
@@ -21,14 +21,13 @@ type Column struct {
 
 type DataColumn[T DataType] struct {
 	Name    string
-	Type    ColumnType
 	Entries []T
 }
 
 type Reference struct {
 	Name        string `json:"referenceName"`
-	TableIndex  uint16 `json:"tableIndex"`
-	ColumnIndex uint16 `json:"columnIndex"`
+	TableIndex  uint   `json:"tableIndex"`
+	ColumnIndex uint   `json:"columnIndex"`
 	PrimaryKey  bool   `json:"referencePrimaryKey"`
 	Unique      bool   `json:"referenceUnique"`
 }
@@ -37,47 +36,70 @@ type Table struct {
 	Name       string      `json:"tableName"`
 	Columns    []Column    `json:"columns"`
 	References []Reference `json:"references"`
+	NumRows    uint        `json:"numRows"`
 }
 
 type DataTable struct {
-	Name        string
-	DataColumns []interface{}
+	Name     string                   `json:"name"`
+	DataRows []map[string]interface{} `json:"rows"`
 }
 
 func GenerateTableData(table Table) (DataTable, error) {
 	t := DataTable{
-		Name:        table.Name,
-		DataColumns: []interface{}{},
+		Name:     table.Name,
+		DataRows: []map[string]interface{}{},
 	}
 
+	// Generate Data for each column
+	var columns []interface{}
 	for _, col := range table.Columns {
-		if c, err := generateColumnData(col); err != nil {
+		if c, err := generateColumnData(col, table.NumRows); err != nil {
 			return t, err
 		} else {
-			t.DataColumns = append(t.DataColumns, c)
+			columns = append(columns, c)
 		}
 	}
 
+	// Convert the columns into rows
+	for i := uint(0); i < table.NumRows; i += 1 {
+		row := map[string]interface{}{}
+
+		for _, column := range columns {
+			switch col := column.(type) {
+			case DataColumn[string]:
+				row[col.Name] = col.Entries[i]
+			case DataColumn[int]:
+				row[col.Name] = col.Entries[i]
+			case DataColumn[uint]:
+				row[col.Name] = col.Entries[i]
+			case DataColumn[float64]:
+				row[col.Name] = col.Entries[i]
+			default:
+				return t, errors.New("unknown column type")
+			}
+		}
+
+		t.DataRows = append(t.DataRows, row)
+	}
 	return t, nil
 }
 
-func generateColumnData(column Column) (interface{}, error) {
+func generateColumnData(column Column, length uint) (interface{}, error) {
 	switch column.Type.Name {
 	case "Row Number":
-		return generateRowNumberColumn(column), nil
+		return generateRowNumberColumn(column, length), nil
 	default:
 		return nil, errors.New("unknown column type")
 	}
 }
 
-func generateRowNumberColumn(column Column) DataColumn[uint64] {
-	data := DataColumn[uint64]{
+func generateRowNumberColumn(column Column, length uint) DataColumn[uint] {
+	data := DataColumn[uint]{
 		Name:    column.Name,
-		Type:    column.Type,
-		Entries: []uint64{},
+		Entries: []uint{},
 	}
 
-	for i := uint64(0); i < 100; i += 1 {
+	for i := uint(0); i < length; i += 1 {
 		data.Entries = append(data.Entries, i)
 	}
 

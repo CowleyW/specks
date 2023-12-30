@@ -1,14 +1,17 @@
 <form [formGroup]="dbForm">
   <div formArrayName="tables">
-    <ng-container *ngFor="let table of tables.getTables(); let si = index">
-      <app-schema-entry [table]="table" [tableIdx]="si"/>
-      <button (click)="tables.removeTable(si)">Remove Table</button>
+    <ng-container *ngFor="let table of tables.getTables(); let ti = index">
+      <app-schema-entry [table]="table" [tableIdx]="ti"/>
     </ng-container>
   </div>
 
   <button (click)="tables.addNewTable()">Add Table</button>
 </form>
 
-<pre>{{ dbForm.getRawValue() | json }}</pre>
+<form [formGroup]="outputForm">
+  <select formControlName="outputFormat" id="outputFormat">
+    <option *ngFor="let format of Format | keyvalue" [value]="format.key">{{format.value}}</option>
+  </select>
+</form>
 
-<button (click)="api.generateData(tables.toJSON())">Generate Data</button>
+<button (click)="generateData()">Generate Data</button>

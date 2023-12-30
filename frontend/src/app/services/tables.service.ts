@@ -43,7 +43,8 @@ export class TablesService {
     return this.formBuilder.group({
       tableName: [`Table ${tableNum}`, Validators.required],
       columns: this.formBuilder.array([]),
-      references: this.formBuilder.array([])
+      references: this.formBuilder.array([]),
+      numRows: [100, Validators.required]
     });
   }
 
@@ -155,7 +156,8 @@ export class TablesService {
             referencePrimaryKey: r.get('referencePrimaryKey')!.value,
             referenceUnique: r.get('referenceUnique')!.value
           };
-        })
+        }),
+        numRows: table.get('numRows')!.value
       };
     });
   }

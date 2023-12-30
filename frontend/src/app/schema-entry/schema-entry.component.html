@@ -20,4 +20,9 @@
     </ng-container>
     <button (click)="tables.addNewReference(tableIdx)">Add Reference</button>
   </div>
+
+  <label for="numRows{{tableIdx}}">Rows</label>
+  <input type="number" formControlName="numRows" id="numRows{{tableIdx}}">
+
+  <button (click)="tables.removeTable(tableIdx)">Remove Table</button>
 </div>

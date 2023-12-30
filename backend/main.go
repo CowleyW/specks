@@ -28,7 +28,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Failed to generate data", http.StatusBadRequest)
 			return
 		}
-
+		
 		dataTables = append(dataTables, t)
 	}
 
