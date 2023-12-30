@@ -18,11 +18,34 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
 		return
 	}
-
 	fmt.Printf("Received: %+v\n", data)
+
+	var dataTables []DataTable
+	for _, table := range data {
+		t, err := GenerateTableData(table)
+		if err != nil {
+			fmt.Println(err)
+			http.Error(w, "Failed to generate data", http.StatusBadRequest)
+			return
+		}
+
+		dataTables = append(dataTables, t)
+	}
+
+	jsonData, err := json.Marshal(dataTables)
+	if err != nil {
+		fmt.Println(err)
+		http.Error(w, "Error constructing data", http.StatusInternalServerError)
+		return
+	}
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
+	_, err = w.Write(jsonData)
+	if err != nil {
+		http.Error(w, "error building the response", http.StatusInternalServerError)
+		return
+	}
 }
 
 func addCORSHeaders(handler http.Handler) http.Handler {
