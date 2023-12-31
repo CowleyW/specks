@@ -2,6 +2,8 @@ package main
 
 import (
 	"errors"
+	rand2 "math/rand"
+	"time"
 )
 
 type ColumnType struct {
@@ -9,7 +11,7 @@ type ColumnType struct {
 }
 
 type DataType interface {
-	string | int | uint | float64
+	string | int | uint | float64 | bool
 }
 
 type Column struct {
@@ -51,12 +53,12 @@ func GenerateTableData(table Table) (DataTable, error) {
 	}
 
 	// Generate Data for each column
-	var columns []interface{}
+	var nonKeyColumns []interface{}
 	for _, col := range table.Columns {
 		if c, err := generateColumnData(col, table.NumRows); err != nil {
 			return t, err
 		} else {
-			columns = append(columns, c)
+			nonKeyColumns = append(nonKeyColumns, c)
 		}
 	}
 
@@ -64,7 +66,7 @@ func GenerateTableData(table Table) (DataTable, error) {
 	for i := uint(0); i < table.NumRows; i += 1 {
 		row := map[string]interface{}{}
 
-		for _, column := range columns {
+		for _, column := range nonKeyColumns {
 			switch col := column.(type) {
 			case DataColumn[string]:
 				row[col.Name] = col.Entries[i]
@@ -73,6 +75,8 @@ func GenerateTableData(table Table) (DataTable, error) {
 			case DataColumn[uint]:
 				row[col.Name] = col.Entries[i]
 			case DataColumn[float64]:
+				row[col.Name] = col.Entries[i]
+			case DataColumn[bool]:
 				row[col.Name] = col.Entries[i]
 			default:
 				return t, errors.New("unknown column type")
@@ -87,13 +91,17 @@ func GenerateTableData(table Table) (DataTable, error) {
 func generateColumnData(column Column, length uint) (interface{}, error) {
 	switch column.Type.Name {
 	case "Row Number":
-		return generateRowNumberColumn(column, length), nil
+		return generateRowNumberColumn(column, length)
+	case "Random Number":
+		return generateRandomNumberColumn(column, length, 0, 1000)
+	case "Boolean":
+		return generateBooleanColumn(column, length, 50)
 	default:
 		return nil, errors.New("unknown column type")
 	}
 }
 
-func generateRowNumberColumn(column Column, length uint) DataColumn[uint] {
+func generateRowNumberColumn(column Column, length uint) (DataColumn[uint], error) {
 	data := DataColumn[uint]{
 		Name:    column.Name,
 		Entries: []uint{},
@@ -103,5 +111,50 @@ func generateRowNumberColumn(column Column, length uint) DataColumn[uint] {
 		data.Entries = append(data.Entries, i)
 	}
 
-	return data
+	return data, nil
+}
+
+// Generates a column containing boolean values.
+//
+// trueSkew should be a number in the range [0, 100] representing the approximate percentage of entries that are true
+func generateBooleanColumn(column Column, length uint, trueSkew int) (DataColumn[bool], error) {
+	rand := rand2.New(rand2.NewSource(time.Now().UnixNano()))
+	data := DataColumn[bool]{
+		Name:    column.Name,
+		Entries: []bool{},
+	}
+
+	if column.Unique && length > 2 {
+		return data, errors.New("unique column has length greater than domain")
+	}
+
+	for i := uint(0); i < length; i += 1 {
+		var val bool
+		if rand.Intn(100) < trueSkew {
+			val = true
+		} else {
+			val = false
+		}
+		data.Entries = append(data.Entries, val)
+	}
+
+	return data, nil
+}
+
+func generateRandomNumberColumn(column Column, length uint, min int, max int) (DataColumn[int], error) {
+	rand := rand2.New(rand2.NewSource(time.Now().UnixNano()))
+	data := DataColumn[int]{
+		Name:    column.Name,
+		Entries: []int{},
+	}
+
+	if column.Unique && length > uint(max-min) {
+		return data, errors.New("unique column has length greater than domain")
+	}
+
+	for i := uint(0); i < length; i += 1 {
+		data.Entries = append(data.Entries, rand.Intn(max-min)+min)
+	}
+	
+	return data, nil
 }

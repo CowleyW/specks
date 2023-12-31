@@ -140,7 +140,7 @@ export class TablesService {
     return this.getTables().map((table: FormGroup, idx: number) => {
       return {
         tableName: table.get('tableName')!.value,
-        columns: this.getColumns(idx).map((c: FormGroup) => {
+        columns: this.getColumns(idx).map((c: FormGroup, idx: number) => {
           return {
             columnName: c.get('columnName')!.value,
             columnType: JSON.parse(c.get('columnType')!.value),
