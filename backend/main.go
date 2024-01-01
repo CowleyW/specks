@@ -4,7 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"math/rand"
 	"net/http"
+	"time"
 )
 
 func handler(w http.ResponseWriter, r *http.Request) {
@@ -13,23 +15,20 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var data []Table
-	if err := json.NewDecoder(r.Body).Decode(&data); err != nil {
+	var descs []TableDesc
+	if err := json.NewDecoder(r.Body).Decode(&descs); err != nil {
+		fmt.Println(err)
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
 		return
 	}
-	fmt.Printf("Received: %+v\n", data)
+	fmt.Printf("Received: %+v\n", descs)
 
-	var dataTables []DataTable
-	for _, table := range data {
-		t, err := GenerateTableData(table)
-		if err != nil {
-			fmt.Println(err)
-			http.Error(w, "Failed to generate data", http.StatusBadRequest)
-			return
-		}
-		
-		dataTables = append(dataTables, t)
+	random := rand.New(rand.NewSource(time.Now().UnixNano()))
+	dataTables, err := GenerateTables(descs, random)
+	if err != nil {
+		fmt.Println(err)
+		http.Error(w, "failed to generate data", http.StatusBadRequest)
+		return
 	}
 
 	jsonData, err := json.Marshal(dataTables)
