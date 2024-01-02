@@ -1,51 +1,11 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
+	"database/sql"
 	"log"
-	"math/rand"
 	"net/http"
 	"time"
 )
-
-func handler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-		return
-	}
-
-	var descs []TableDesc
-	if err := json.NewDecoder(r.Body).Decode(&descs); err != nil {
-		fmt.Println(err)
-		http.Error(w, "Invalid request body", http.StatusBadRequest)
-		return
-	}
-	fmt.Printf("Received: %+v\n", descs)
-
-	random := rand.New(rand.NewSource(time.Now().UnixNano()))
-	dataTables, err := GenerateTables(descs, random)
-	if err != nil {
-		fmt.Println(err)
-		http.Error(w, "failed to generate data", http.StatusBadRequest)
-		return
-	}
-
-	jsonData, err := json.Marshal(dataTables)
-	if err != nil {
-		fmt.Println(err)
-		http.Error(w, "Error constructing data", http.StatusInternalServerError)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	_, err = w.Write(jsonData)
-	if err != nil {
-		http.Error(w, "error building the response", http.StatusInternalServerError)
-		return
-	}
-}
 
 func addCORSHeaders(handler http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -69,6 +29,37 @@ func addCORSHeaders(handler http.Handler) http.Handler {
 }
 
 func main() {
-	http.HandleFunc("/", handler)
+	db, err := openDB("backend:password@tcp(db-dev:3306)/specks_db")
+	if err != nil {
+		log.Fatalln(err)
+	}
+	defer func(db *sql.DB) {
+		err := db.Close()
+		if err != nil {
+			log.Fatalln(err)
+		}
+	}(db)
+
+	app := application{db: db}
+
+	http.HandleFunc("/", app.handler)
 	log.Fatal(http.ListenAndServe(":4000", addCORSHeaders(http.DefaultServeMux)))
+}
+
+func openDB(dns string) (*sql.DB, error) {
+	db, err := sql.Open("mysql", dns)
+	if err != nil {
+		return nil, err
+	}
+
+	db.SetMaxOpenConns(25)
+	db.SetMaxIdleConns(25)
+	db.SetConnMaxLifetime(5 * time.Minute)
+
+	err = db.Ping()
+	if err != nil {
+		return nil, err
+	}
+
+	return db, nil
 }

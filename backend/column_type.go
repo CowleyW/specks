@@ -27,14 +27,14 @@ const (
 )
 
 type IColumnType interface {
-	GenerateEntry(desc TableDesc, rowNumber uint, r *rand.Rand) (any, error)
+	GenerateEntry(desc TableDesc, rowNumber uint, r *rand.Rand, db *sql.DB) (any, error)
 }
 
 type BasicColumnType struct {
 	Name DataType `json:"name"`
 }
 
-func (bct BasicColumnType) GenerateEntry(desc TableDesc, rowNumber uint, r *rand.Rand) (any, error) {
+func (bct BasicColumnType) GenerateEntry(desc TableDesc, rowNumber uint, r *rand.Rand, db *sql.DB) (any, error) {
 	switch bct.Name {
 	case RowNumber:
 		return rowNumber, nil
@@ -47,22 +47,19 @@ func (bct BasicColumnType) GenerateEntry(desc TableDesc, rowNumber uint, r *rand
 			return false, nil
 		}
 	case FirstName:
-		db, err := sql.Open("mysql", "backend:password@tcp(db-dev:3306)/specks_db")
-		if err != nil {
-			return nil, errors.New("failed to connect to db")
-		}
-
 		var count int
-		err = db.QueryRow("SELECT COUNT(*) FROM first_names").Scan(&count)
+		err := db.QueryRow("SELECT COUNT(*) FROM first_names").Scan(&count)
 		if err != nil {
 			fmt.Println(err)
 			return nil, errors.New("failed to scan query result for count")
 		}
 
-		random := r.Intn(count)
+		random := r.Intn(count) + 1
 		var name string
 		err = db.QueryRow("SELECT name FROM first_names WHERE id = ?", random).Scan(&name)
 		if err != nil {
+
+			fmt.Println("Random number: ", random)
 			return nil, errors.New("failed to scan query result for name")
 		}
 

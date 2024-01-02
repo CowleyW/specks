@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"errors"
 	"math/rand"
 )
@@ -10,7 +11,7 @@ type TableData struct {
 	RowData []RowData `json:"rows"`
 }
 
-func GenerateTableData(desc TableDesc, dataTables []TableData, r *rand.Rand) (TableData, error) {
+func GenerateTableData(desc TableDesc, dataTables []TableData, r *rand.Rand, db *sql.DB) (TableData, error) {
 	t := TableData{
 		Name:    desc.Name,
 		RowData: []RowData{},
@@ -34,7 +35,7 @@ func GenerateTableData(desc TableDesc, dataTables []TableData, r *rand.Rand) (Ta
 		}
 
 		for _, columnDesc := range desc.Columns {
-			if entry, err := columnDesc.Type.GenerateEntry(desc, row, r); err != nil {
+			if entry, err := columnDesc.Type.GenerateEntry(desc, row, r, db); err != nil {
 				return t, err
 			} else {
 				data.Entries[columnDesc.Name] = entry
@@ -60,11 +61,11 @@ func GenerateTableData(desc TableDesc, dataTables []TableData, r *rand.Rand) (Ta
 	return t, nil
 }
 
-func GenerateTables(descs []TableDesc, r *rand.Rand) ([]TableData, error) {
+func GenerateTables(descs []TableDesc, r *rand.Rand, db *sql.DB) ([]TableData, error) {
 	var dataTables []TableData
 
 	for _, table := range descs {
-		t, err := GenerateTableData(table, dataTables, r)
+		t, err := GenerateTableData(table, dataTables, r, db)
 		if err != nil {
 			return dataTables, err
 		}
