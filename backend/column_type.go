@@ -1,8 +1,12 @@
 package main
 
 import (
+	"database/sql"
 	"errors"
+	"fmt"
 	"math/rand"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 type DataType string
@@ -42,6 +46,27 @@ func (bct BasicColumnType) GenerateEntry(desc TableDesc, rowNumber uint, r *rand
 		} else {
 			return false, nil
 		}
+	case FirstName:
+		db, err := sql.Open("mysql", "backend:password@tcp(db-dev:3306)/specks_db")
+		if err != nil {
+			return nil, errors.New("failed to connect to db")
+		}
+
+		var count int
+		err = db.QueryRow("SELECT COUNT(*) FROM first_names").Scan(&count)
+		if err != nil {
+			fmt.Println(err)
+			return nil, errors.New("failed to scan query result for count")
+		}
+
+		random := r.Intn(count)
+		var name string
+		err = db.QueryRow("SELECT name FROM first_names WHERE id = ?", random).Scan(&name)
+		if err != nil {
+			return nil, errors.New("failed to scan query result for name")
+		}
+
+		return name, nil
 	default:
 		return nil, errors.New("unknown column data type")
 	}

@@ -20,6 +20,7 @@ services:
       - db-dev
     networks:
       - api-interface
+      - database
 
   #############################################################################
   # configure the Angular frontend
@@ -55,6 +56,8 @@ services:
     secrets:
       - db_pw
       - db_root_pw
+    networks:
+      - database
 
 ###############################################################################
 # configure the project secrets
@@ -68,4 +71,6 @@ secrets:
 # configure the project networks
 networks:
   api-interface:
+    driver: bridge
+  database:
     driver: bridge
