@@ -43,10 +43,8 @@ services:
   #############################################################################
   # configure the MySQL container
   db-dev:
-    image: mysql:8
+    build: db/
     container_name: db-dev
-    volumes:
-      - ./db:/docker-entrypoint-initdb.d/:ro
     ports:
       - "3200:3306"
     restart: unless-stopped

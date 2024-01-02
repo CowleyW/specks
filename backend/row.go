@@ -1,9 +1,15 @@
 package main
 
+import "encoding/json"
+
 type RowEntry interface{}
 
 type RowData struct {
 	Entries map[string]RowEntry
+}
+
+func (rd RowData) MarshalJSON() ([]byte, error) {
+	return json.Marshal(rd.Entries)
 }
 
 func (rd RowData) HasOverlapConflict(desc TableDesc, rows []RowData) bool {

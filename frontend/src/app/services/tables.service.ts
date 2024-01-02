@@ -79,14 +79,16 @@ export class TablesService {
     return (this.tablesForm.get('tables') as FormArray).controls as FormGroup[];
   }
 
+  getTablesAbove(tableIndex: number): FormGroup[] {
+    return this.getTables().slice(0, tableIndex+1);
+  }
+
   getTable(tableIndex: number) {
     return this.getTables()[tableIndex];
   }
 
   getPrimaryKeys(tableIndex: number): FormGroup[] {
-    const cols: FormGroup[] = this.getColumns(tableIndex).filter((col) => col.get('columnPrimaryKey')!.value);
-    console.log(cols.length);
-    return cols;
+    return this.getColumns(tableIndex).filter((col) => col.get('columnPrimaryKey')!.value);
   }
 
   removeTable(tableIndex: number): void {
