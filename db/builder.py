@@ -3,7 +3,8 @@ import os
 import shutil
 
 scripts = [
-    ('scripts/first_names/', 'first_names.py', 'scripts/first_names/01_first_names.sql', '01_first_names.sql')
+    ('scripts/first_names/', 'first_names.py', 'scripts/first_names/01_first_names.sql', '01_first_names.sql'),
+    ('scripts/last_names/', 'last_names.py', 'scripts/last_names/02_last_names.sql', '02_last_names.sql')
 ]
 
 for script in scripts:

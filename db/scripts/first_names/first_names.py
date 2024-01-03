@@ -17,6 +17,8 @@ with open('01_first_names.sql', 'w') as sqlfile:
         next(reader) # skip the CSV header
 
         for i, row in enumerate(reader):
+            if i >= 1000:
+                break
             name = row[3]
             name = name[0].upper() + name[1:].lower()
             name = name.replace("'", "''")

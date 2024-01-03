@@ -64,6 +64,23 @@ func (bct BasicColumnType) GenerateEntry(desc TableDesc, rowNumber uint, r *rand
 		}
 
 		return name, nil
+	case LastName:
+		var count int
+		err := db.QueryRow("SELECT COUNT(*) FROM last_names").Scan(&count)
+		if err != nil {
+			fmt.Println(err)
+			return nil, errors.New("failed to scan query result for count")
+		}
+
+		random := r.Intn(count) + 1
+		var name string
+		err = db.QueryRow("SELECT name FROM last_names WHERE id = ?", random).Scan(&name)
+		if err != nil {
+			fmt.Println("Random number: ", random)
+			return nil, errors.New("failed to scan query result for name")
+		}
+
+		return name, nil
 	default:
 		return nil, errors.New("unknown column data type")
 	}

@@ -4,5 +4,3 @@ GRANT ALL PRIVILEGES ON specks_db.* TO 'backend'@'%';
 FLUSH PRIVILEGES;
 
 USE specks_db;
-
-SELECT 'at least this far!' as '';
