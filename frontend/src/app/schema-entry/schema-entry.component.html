@@ -7,10 +7,10 @@
         <input type="text" formControlName="columnName" id="columnName{{tableIdx}}({{ci}})">
 
         <app-type-modifier [column]="column" [tableIdx]="tableIdx" [columnIdx]="ci"></app-type-modifier>
-        <button (click)="tables.removeColumn(tableIdx, ci)">Remove</button>
+        <button type="button" (click)="tables.removeColumn(tableIdx, ci)">Remove</button>
       </div>
     </ng-container>
-    <button (click)="tables.addNewColumn(tableIdx)">Add Column</button>
+    <button type="button" (click)="tables.addNewColumn(tableIdx)">Add Column</button>
   </div>
 
   <!-- References -->
@@ -18,11 +18,11 @@
     <ng-container *ngFor="let reference of tables.getReferences(tableIdx); let ri = index">
       <app-reference-entry [reference]="reference" [tableIdx]="tableIdx" [referenceIdx]="ri"></app-reference-entry>
     </ng-container>
-    <button (click)="tables.addNewReference(tableIdx)">Add Reference</button>
+    <button type="button" (click)="tables.addNewReference(tableIdx)">Add Reference</button>
   </div>
 
   <label for="numRows{{tableIdx}}">Rows</label>
   <input type="number" formControlName="numRows" id="numRows{{tableIdx}}">
 
-  <button (click)="tables.removeTable(tableIdx)">Remove Table</button>
+  <button type="button" (click)="tables.removeTable(tableIdx)">Remove Table</button>
 </div>

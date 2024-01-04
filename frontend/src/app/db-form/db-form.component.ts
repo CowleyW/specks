@@ -15,17 +15,21 @@ import {ConverterFactory, Format} from "../services/converter";
 })
 export class DbFormComponent {
   dbForm: FormGroup;
-  outputForm: FormGroup;
   api: ApiService;
 
   constructor(protected tables: TablesService, api: ApiService, fb: FormBuilder) {
     this.api = api;
     this.dbForm = tables.tablesForm;
     tables.addNewTable();
+  }
 
-    this.outputForm = fb.group({
-      outputFormat: [Format.CSV, Validators.required]
-    });
+  onSubmit() {
+    if (!this.dbForm.valid) {
+      console.log("DB Form is invalid");
+      return;
+    }
+
+    this.generateData();
   }
 
   generateData() {
@@ -33,7 +37,7 @@ export class DbFormComponent {
       next: (response) => {
         console.log("Success\n", JSON.stringify(response));
 
-        const format: Format = this.outputForm.get('outputFormat')!.value;
+        const format: Format = this.dbForm.get('outputFormat')!.value;
         const converter = ConverterFactory.createConverter(format);
 
         if (converter != null) {
@@ -47,5 +51,4 @@ export class DbFormComponent {
   }
 
   protected readonly Format = Format;
-  protected readonly JSON = JSON;
 }

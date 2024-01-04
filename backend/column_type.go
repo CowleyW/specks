@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"encoding/json"
 	"errors"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
@@ -93,6 +94,47 @@ func (bct BoundedColumnType) GenerateEntry(desc TableDesc, rowNumber uint, r *ra
 	switch bct.Name {
 	case RandomNumber:
 		return r.Intn(bct.Max-bct.Min) + bct.Min, nil
+	default:
+		return nil, errors.New("unknown column data type")
+	}
+}
+
+func ConstructColumnType(data json.RawMessage) (IColumnType, error) {
+	var basic BasicColumnType
+	var bounded BoundedColumnType
+	if err := json.Unmarshal(data, &basic); err != nil {
+		return nil, err
+	}
+
+	switch basic.Name {
+	case FirstName:
+		return basic, nil
+	case LastName:
+		return basic, nil
+	case Character:
+		return nil, errors.New("not implemented yet")
+	case Age:
+		return nil, errors.New("not implemented yet")
+	case Color:
+		return nil, errors.New("not implemented yet")
+	case Boolean:
+		return basic, nil
+	case SSN:
+		return nil, errors.New("not implemented yet")
+	case RowNumber:
+		return basic, nil
+	case RandomNumber:
+		if err := json.Unmarshal(data, &bounded); err != nil {
+			return nil, err
+		} else {
+			return bounded, nil
+		}
+	case Date:
+		return nil, errors.New("not implemented yet")
+	case Time:
+		return nil, errors.New("not implemented yet")
+	case DateTime:
+		return nil, errors.New("not implemented yet")
 	default:
 		return nil, errors.New("unknown column data type")
 	}

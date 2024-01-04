@@ -1,17 +1,15 @@
-<form [formGroup]="dbForm">
+<form [formGroup]="dbForm" (ngSubmit)="onSubmit()">
   <div formArrayName="tables">
     <ng-container *ngFor="let table of tables.getTables(); let ti = index">
       <app-schema-entry [table]="table" [tableIdx]="ti"/>
     </ng-container>
   </div>
 
-  <button (click)="tables.addNewTable()">Add Table</button>
-</form>
+  <button type="button" (click)="tables.addNewTable()">Add Table</button>
 
-<form [formGroup]="outputForm">
   <select formControlName="outputFormat" id="outputFormat">
     <option *ngFor="let format of Format | keyvalue" [value]="format.key">{{format.value}}</option>
   </select>
-</form>
 
-<button (click)="generateData()">Generate Data</button>
+  <button type="submit">Generate Data</button>
+</form>

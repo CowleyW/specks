@@ -1,6 +1,7 @@
 import {Injectable, Injector} from "@angular/core";
 import {FormArray, FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {BasicColumnType, BoundedColumnType, ColumnType} from "./type.service";
+import {Format} from "./converter";
 
 @Injectable({
   providedIn: 'root'
@@ -34,7 +35,8 @@ export class TablesService {
 
   private newDbForm(): FormGroup {
     return this.formBuilder.group({
-      tables: this.formBuilder.array([])
+      tables: this.formBuilder.array([]),
+      outputFormat: [Format.CSV, Validators.required]
     });
   }
 
