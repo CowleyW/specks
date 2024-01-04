@@ -1,6 +1,6 @@
 import {Injectable, Injector} from "@angular/core";
 import {FormArray, FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {ColumnType} from "./type.service";
+import {BasicColumnType, BoundedColumnType, ColumnType} from "./type.service";
 
 @Injectable({
   providedIn: 'root'
@@ -12,18 +12,18 @@ export class TablesService {
   tablesForm: FormGroup;
 
   public types: ColumnType[] = [
-    new ColumnType("First Name"),
-    new ColumnType("Last Name"),
-    new ColumnType("Character"),
-    new ColumnType("Age"),
-    new ColumnType("Color"),
-    new ColumnType("Boolean"),
-    new ColumnType("SSN"),
-    new ColumnType("Row Number"),
-    new ColumnType("Random Number"),
-    new ColumnType("Date"),
-    new ColumnType("Time"),
-    new ColumnType("Datetime")
+    new BasicColumnType("First Name"),
+    new BasicColumnType("Last Name"),
+    new BasicColumnType("Character"),
+    new BasicColumnType("Age"),
+    new BasicColumnType("Color"),
+    new BasicColumnType("Boolean"),
+    new BasicColumnType("SSN"),
+    new BasicColumnType("Row Number"),
+    new BoundedColumnType("Random Number", 0, 1000),
+    new BasicColumnType("Date"),
+    new BasicColumnType("Time"),
+    new BasicColumnType("Datetime")
   ];
 
   constructor(private injector: Injector) {
@@ -52,7 +52,11 @@ export class TablesService {
     const columnNum = this.getColumns(tableIndex).length + 1;
     return this.formBuilder.group({
       columnName: [`Column ${columnNum}`, Validators.required],
-      columnType: [null, Validators.required],
+      columnType: this.formBuilder.group({
+        name: ['', Validators.required],
+        min: ['', Validators.pattern(/^-?\d+$/)],
+        max: ['', Validators.pattern(/^-?\d+$/)]
+      }),
       columnPrimaryKey: [false, Validators.required],
       columnUnique: [false, Validators.required]
     });
@@ -148,7 +152,7 @@ export class TablesService {
         columns: this.getColumns(idx).map((c: FormGroup, idx: number) => {
           return {
             columnName: c.get('columnName')!.value,
-            columnType: JSON.parse(c.get('columnType')!.value),
+            columnType: this.columnTypeToJSON(c.get('columnType')! as FormGroup),
             columnPrimaryKey: c.get('columnPrimaryKey')!.value,
             columnUnique: c.get('columnUnique')!.value
           };
@@ -166,5 +170,21 @@ export class TablesService {
         numRows: table.get('numRows')!.value
       };
     });
+  }
+
+  columnTypeToJSON(columnType: FormGroup): any {
+    switch (columnType.get('name')!.value) {
+      case 'Date':
+      case 'Time':
+      case 'Datetime':
+      case 'Random Number':
+        return {
+          name: columnType.get('name')!.value,
+          min: columnType.get('min')!.value,
+          max: columnType.get('max')!.value
+        }
+      default:
+        return { name: columnType.get('name')!.value }
+    }
   }
 }

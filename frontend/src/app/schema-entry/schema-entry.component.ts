@@ -1,8 +1,16 @@
 import {Component, Input} from '@angular/core';
-import {FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
+import {
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators
+} from "@angular/forms";
 import {NgForOf} from "@angular/common";
 import {TypeModifierComponent} from "../db-form/type-modifier/type-modifier.component";
-import {ColumnType} from "../services/type.service";
+import {BasicColumnType} from "../services/type.service";
 import {TablesService} from "../services/tables.service";
 import {ReferenceEntryComponent} from "../db-form/reference-entry/reference-entry.component";
 
@@ -22,5 +30,6 @@ export class SchemaEntryComponent {
   @Input() table!: FormGroup;
   @Input() tableIdx!: number;
 
-  constructor(protected tables: TablesService) {}
+  constructor(protected tables: TablesService) {
+  }
 }

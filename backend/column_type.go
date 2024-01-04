@@ -4,9 +4,8 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"math/rand"
-
 	_ "github.com/go-sql-driver/mysql"
+	"math/rand"
 )
 
 type DataType string
@@ -38,8 +37,6 @@ func (bct BasicColumnType) GenerateEntry(desc TableDesc, rowNumber uint, r *rand
 	switch bct.Name {
 	case RowNumber:
 		return rowNumber, nil
-	case RandomNumber:
-		return r.Intn(1000), nil
 	case Boolean:
 		if r.Intn(1000) >= 500 {
 			return true, nil
@@ -81,6 +78,21 @@ func (bct BasicColumnType) GenerateEntry(desc TableDesc, rowNumber uint, r *rand
 		}
 
 		return name, nil
+	default:
+		return nil, errors.New("unknown column data type")
+	}
+}
+
+type BoundedColumnType struct {
+	Name DataType `json:"name"`
+	Min  int      `json:"min"`
+	Max  int      `json:"max"`
+}
+
+func (bct BoundedColumnType) GenerateEntry(desc TableDesc, rowNumber uint, r *rand.Rand, db *sql.DB) (any, error) {
+	switch bct.Name {
+	case RandomNumber:
+		return r.Intn(bct.Max-bct.Min) + bct.Min, nil
 	default:
 		return nil, errors.New("unknown column data type")
 	}

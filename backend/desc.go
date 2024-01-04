@@ -27,10 +27,20 @@ func (cd *ColumnDesc) UnmarshalJSON(data []byte) error {
 		return err
 	}
 
-	var columnType BasicColumnType
-	if err := json.Unmarshal(temp.Type, &columnType); err != nil {
-		fmt.Println("HERE: ", err)
-		return err
+	var columnType IColumnType
+
+	var bounded BoundedColumnType
+	if err := json.Unmarshal(temp.Type, &bounded); err != nil {
+		fmt.Println(err)
+		var basic BasicColumnType
+		if err := json.Unmarshal(temp.Type, &basic); err != nil {
+			fmt.Println("HERE: ", err)
+			return err
+		} else {
+			columnType = basic
+		}
+	} else {
+		columnType = bounded
 	}
 
 	cd.Name = temp.Name
