@@ -1,6 +1,6 @@
 # Specks
 
-Specks is a web application for generating mock data in common data formats
+Specks is a web application for generating mock data in common data formats.
 
 ## Self-hosting
 
