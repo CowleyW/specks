@@ -3,8 +3,11 @@ import os
 import shutil
 
 scripts = [
-    ('scripts/first_names/', 'first_names.py', 'scripts/first_names/01_first_names.sql', '01_first_names.sql'),
-    ('scripts/last_names/', 'last_names.py', 'scripts/last_names/02_last_names.sql', '02_last_names.sql')
+    # 0                       1                 2
+    # dir path                script name       SQL name
+    ('scripts/first_names/', 'first_names.py', '01_first_names.sql'),
+    ('scripts/last_names/',  'last_names.py',  '02_last_names.sql'),
+    ('scripts/colors/',       'colors.py',      '03_colors.sql')
 ]
 
 for script in scripts:
@@ -17,4 +20,4 @@ for script in scripts:
     if stderr:
         print(f"{script[0]} stderr: %s" % (stderr.decode()))
 
-    shutil.move(script[2], script[3])
+    shutil.move(script[0] + script[2], script[2])

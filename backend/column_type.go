@@ -38,6 +38,10 @@ func (bct BasicColumnType) GenerateEntry(desc TableDesc, rowNumber uint, r *rand
 	switch bct.Name {
 	case RowNumber:
 		return rowNumber, nil
+	case Color:
+		return queryRandomColumn(db, r, "colors", "name")
+	case SSN:
+		return fmt.Sprintf("%03d-%02d-%04d", r.Intn(1000), r.Intn(100), r.Intn(10000)), nil
 	case Boolean:
 		if r.Intn(1000) >= 500 {
 			return true, nil
@@ -45,40 +49,9 @@ func (bct BasicColumnType) GenerateEntry(desc TableDesc, rowNumber uint, r *rand
 			return false, nil
 		}
 	case FirstName:
-		var count int
-		err := db.QueryRow("SELECT COUNT(*) FROM first_names").Scan(&count)
-		if err != nil {
-			fmt.Println(err)
-			return nil, errors.New("failed to scan query result for count")
-		}
-
-		random := r.Intn(count) + 1
-		var name string
-		err = db.QueryRow("SELECT name FROM first_names WHERE id = ?", random).Scan(&name)
-		if err != nil {
-
-			fmt.Println("Random number: ", random)
-			return nil, errors.New("failed to scan query result for name")
-		}
-
-		return name, nil
+		return queryRandomColumn(db, r, "first_names", "name")
 	case LastName:
-		var count int
-		err := db.QueryRow("SELECT COUNT(*) FROM last_names").Scan(&count)
-		if err != nil {
-			fmt.Println(err)
-			return nil, errors.New("failed to scan query result for count")
-		}
-
-		random := r.Intn(count) + 1
-		var name string
-		err = db.QueryRow("SELECT name FROM last_names WHERE id = ?", random).Scan(&name)
-		if err != nil {
-			fmt.Println("Random number: ", random)
-			return nil, errors.New("failed to scan query result for name")
-		}
-
-		return name, nil
+		return queryRandomColumn(db, r, "last_names", "name")
 	default:
 		return nil, errors.New("unknown column data type")
 	}
@@ -117,11 +90,11 @@ func ConstructColumnType(data json.RawMessage) (IColumnType, error) {
 	case Age:
 		return unmarshalAsBounded(data)
 	case Color:
-		return nil, errors.New("not implemented yet")
+		return basic, nil
 	case Boolean:
 		return basic, nil
 	case SSN:
-		return nil, errors.New("not implemented yet")
+		return basic, nil
 	case RowNumber:
 		return basic, nil
 	case RandomNumber:
