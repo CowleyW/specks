@@ -21,6 +21,8 @@ services:
     networks:
       - api-interface
       - database
+    secrets:
+      - db_pw
 
   #############################################################################
   # configure the Angular frontend

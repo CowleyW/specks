@@ -2,8 +2,11 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -29,7 +32,12 @@ func addCORSHeaders(handler http.Handler) http.Handler {
 }
 
 func main() {
-	db, err := openDB("backend:password@tcp(db-dev:3306)/specks_db")
+	pw, err := readSecret("db_pw")
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	db, err := openDB(fmt.Sprintf("backend:%s@tcp(db-dev:3306)/specks_db", pw))
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -62,4 +70,13 @@ func openDB(dns string) (*sql.DB, error) {
 	}
 
 	return db, nil
+}
+
+func readSecret(filename string) (string, error) {
+	content, err := ioutil.ReadFile(fmt.Sprintf("/run/secrets/%s", filename))
+	if err != nil {
+		return "", err
+	}
+
+	return strings.TrimSpace(string(content)), nil
 }
