@@ -4,7 +4,10 @@ Specks is a web application for generating mock data in common data formats.
 
 ## Self-hosting
 
-Have [docker compose](https://docs.docker.com/compose/) installed. Run `./build.sh` to build and run the development version, and run `./build.sh --prod` to build and run the production version.
+1. Install [docker compose](https://docs.docker.com/compose/).
+2. Create a folder `secrets/` and add files `db_pw` and `db_root_pw` containing your MySQL server's passwords.
+3. Run `./build.sh` to run the development build.
+4. Run `./build.sh --prod` to run the production build. (Does not work yet)
 
 ## License
 
