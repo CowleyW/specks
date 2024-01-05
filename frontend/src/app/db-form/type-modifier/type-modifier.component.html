@@ -18,4 +18,12 @@
     <label for="columnTypeMax{{tableIdx}}({{columnIdx}})">Max</label>
     <input type="number" formControlName="max" id="columnTypeMax{{tableIdx}}({{columnIdx}})"/>
   </ng-container>
+
+  <ng-container *ngIf="columnType.get('name')?.value === 'Age'" [formGroup]="columnType">
+    <label for="columnTypeMin{{tableIdx}}({{columnIdx}})">Min</label>
+    <input type="number" formControlName="min" id="columnTypeMin{{tableIdx}}({{columnIdx}})"/>
+
+    <label for="columnTypeMax{{tableIdx}}({{columnIdx}})">Max</label>
+    <input type="number" formControlName="max" id="columnTypeMax{{tableIdx}}({{columnIdx}})"/>
+  </ng-container>
 </ng-container>

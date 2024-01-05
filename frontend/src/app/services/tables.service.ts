@@ -16,7 +16,7 @@ export class TablesService {
     new BasicColumnType("First Name"),
     new BasicColumnType("Last Name"),
     new BasicColumnType("Character"),
-    new BasicColumnType("Age"),
+    new BoundedColumnType("Age", 18, 100),
     new BasicColumnType("Color"),
     new BasicColumnType("Boolean"),
     new BasicColumnType("SSN"),
@@ -179,6 +179,7 @@ export class TablesService {
       case 'Date':
       case 'Time':
       case 'Datetime':
+      case 'Age':
       case 'Random Number':
         return {
           name: columnType.get('name')!.value,

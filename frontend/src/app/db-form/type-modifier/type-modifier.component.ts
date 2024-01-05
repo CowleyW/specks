@@ -34,6 +34,10 @@ export class TypeModifierComponent implements OnInit {
     const type = (event.target as HTMLSelectElement).value;
 
     switch (type) {
+      case 'Age':
+        this.columnType.get('min')!.setValue(18);
+        this.columnType.get('max')!.setValue(100);
+        break;
       case 'Random Number':
         this.columnType.get('min')!.setValue(0);
         this.columnType.get('max')!.setValue(100);
@@ -44,6 +48,4 @@ export class TypeModifierComponent implements OnInit {
         break;
     }
   }
-
-  protected readonly JSON = JSON;
 }

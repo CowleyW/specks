@@ -92,6 +92,8 @@ type BoundedColumnType struct {
 
 func (bct BoundedColumnType) GenerateEntry(desc TableDesc, rowNumber uint, r *rand.Rand, db *sql.DB) (any, error) {
 	switch bct.Name {
+	case Age:
+		return r.Intn(bct.Max-bct.Min) + bct.Min, nil
 	case RandomNumber:
 		return r.Intn(bct.Max-bct.Min) + bct.Min, nil
 	default:
@@ -101,7 +103,6 @@ func (bct BoundedColumnType) GenerateEntry(desc TableDesc, rowNumber uint, r *ra
 
 func ConstructColumnType(data json.RawMessage) (IColumnType, error) {
 	var basic BasicColumnType
-	var bounded BoundedColumnType
 	if err := json.Unmarshal(data, &basic); err != nil {
 		return nil, err
 	}
@@ -114,7 +115,7 @@ func ConstructColumnType(data json.RawMessage) (IColumnType, error) {
 	case Character:
 		return nil, errors.New("not implemented yet")
 	case Age:
-		return nil, errors.New("not implemented yet")
+		return unmarshalAsBounded(data)
 	case Color:
 		return nil, errors.New("not implemented yet")
 	case Boolean:
@@ -124,11 +125,7 @@ func ConstructColumnType(data json.RawMessage) (IColumnType, error) {
 	case RowNumber:
 		return basic, nil
 	case RandomNumber:
-		if err := json.Unmarshal(data, &bounded); err != nil {
-			return nil, err
-		} else {
-			return bounded, nil
-		}
+		return unmarshalAsBounded(data)
 	case Date:
 		return nil, errors.New("not implemented yet")
 	case Time:
@@ -137,5 +134,14 @@ func ConstructColumnType(data json.RawMessage) (IColumnType, error) {
 		return nil, errors.New("not implemented yet")
 	default:
 		return nil, errors.New("unknown column data type")
+	}
+}
+
+func unmarshalAsBounded(data json.RawMessage) (IColumnType, error) {
+	var bounded BoundedColumnType
+	if err := json.Unmarshal(data, &bounded); err != nil {
+		return nil, err
+	} else {
+		return bounded, nil
 	}
 }
