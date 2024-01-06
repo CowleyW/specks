@@ -27,6 +27,10 @@ export class TablesService {
     new BasicColumnType("Datetime")
   ];
 
+  public dateFormats: string[] = [
+    "YYYY-MM-DD"
+  ]
+
   constructor(private injector: Injector) {
     this.formBuilder = this.injector.get(FormBuilder);
 
@@ -56,8 +60,9 @@ export class TablesService {
       columnName: [`Column ${columnNum}`, Validators.required],
       columnType: this.formBuilder.group({
         name: ['', Validators.required],
-        min: ['', Validators.pattern(/^-?\d+$/)],
-        max: ['', Validators.pattern(/^-?\d+$/)]
+        min: [''],
+        max: [''],
+        format: ['']
       }),
       columnPrimaryKey: [false, Validators.required],
       columnUnique: [false, Validators.required]
@@ -86,7 +91,7 @@ export class TablesService {
   }
 
   getTablesAbove(tableIndex: number): FormGroup[] {
-    return this.getTables().slice(0, tableIndex+1);
+    return this.getTables().slice(0, tableIndex + 1);
   }
 
   getTable(tableIndex: number) {
@@ -100,6 +105,7 @@ export class TablesService {
   removeTable(tableIndex: number): void {
     (this.tablesForm.get('tables') as FormArray).removeAt(tableIndex);
   }
+
   getColumns(tableIndex: number): FormGroup[] {
     const table = this.getTable(tableIndex);
     return (table.get('columns') as FormArray).controls as FormGroup[];
@@ -179,6 +185,12 @@ export class TablesService {
       case 'Date':
       case 'Time':
       case 'Datetime':
+        return {
+          name: columnType.get('name')!.value,
+          min: columnType.get('min')!.value,
+          max: columnType.get('max')!.value,
+          format: columnType.get('format')!.value
+        }
       case 'Age':
       case 'Random Number':
         return {
@@ -187,7 +199,7 @@ export class TablesService {
           max: columnType.get('max')!.value
         }
       default:
-        return { name: columnType.get('name')!.value }
+        return {name: columnType.get('name')!.value}
     }
   }
 }

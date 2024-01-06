@@ -1,7 +1,7 @@
 <ng-container [formGroup]="column">
   <ng-container [formGroup]="columnType">
     <select formControlName="name" id="columnType{{tableIdx}}({{columnIdx}})" (change)="initType($event)">
-      <option *ngFor="let t of tables.types" [value]="t.name">{{t.name}}</option>
+      <option *ngFor="let t of tables.types" [value]="t.name">{{ t.name }}</option>
     </select>
   </ng-container>
 
@@ -25,5 +25,20 @@
 
     <label for="columnTypeMax{{tableIdx}}({{columnIdx}})">Max</label>
     <input type="number" formControlName="max" id="columnTypeMax{{tableIdx}}({{columnIdx}})"/>
+  </ng-container>
+
+  <ng-container *ngIf="columnType.get('name')?.value === 'Date'" [formGroup]="columnType">
+    <label for="columnTypeMin{{tableIdx}}({{columnIdx}})">Min</label>
+    <!-- Using [ngModel] with reactive forms is deprecated, but I can't get a default value to appear without using ngModel -->
+    <input type="date" formControlName="min" id="columnTypeMin{{tableIdx}}({{columnIdx}})"/>
+
+    <!-- Using [ngModel] with reactive forms is deprecated, but I can't get a default value to appear without using ngModel -->
+    <label for="columnTypeMax{{tableIdx}}({{columnIdx}})">Max</label>
+    <input type="date" formControlName="max" id="columnTypeMax{{tableIdx}}({{columnIdx}})"/>
+
+    <label for="columnTypeFormat{{tableIdx}}({{columnIdx}})">Format</label>
+    <select formControlName="format" id="columnTypeFormat{{tableIdx}}({{columnIdx}})">
+      <option *ngFor="let f of tables.dateFormats" [value]="f">{{ f }}</option>
+    </select>
   </ng-container>
 </ng-container>

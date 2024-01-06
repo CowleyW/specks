@@ -7,6 +7,7 @@ import (
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"math/rand"
+	"time"
 )
 
 type DataType string
@@ -74,6 +75,27 @@ func (bct BoundedColumnType) GenerateEntry(desc TableDesc, rowNumber uint, r *ra
 	}
 }
 
+type DateColumnType struct {
+	Name   DataType   `json:"name"`
+	Min    time.Time  `json:"min"`
+	Max    time.Time  `json:"max"`
+	Format DateFormat `json:"format"`
+}
+
+func (dct DateColumnType) GenerateEntry(desc TableDesc, rowNumber uint, r *rand.Rand, db *sql.DB) (any, error) {
+	min := daysSinceEpoch(dct.Min)
+	max := daysSinceEpoch(dct.Max)
+	random := r.Intn(max-min) + min
+	date := time.Unix(int64(random*86400), 0)
+
+	switch dct.Format {
+	case YYYY_MM_DD:
+		return fmt.Sprintf("%04d-%02d-%02d", date.Year(), date.Month(), date.Day()), nil
+	default:
+		return nil, errors.New("todo")
+	}
+}
+
 func ConstructColumnType(data json.RawMessage) (IColumnType, error) {
 	var basic BasicColumnType
 	if err := json.Unmarshal(data, &basic); err != nil {
@@ -100,7 +122,7 @@ func ConstructColumnType(data json.RawMessage) (IColumnType, error) {
 	case RandomNumber:
 		return unmarshalAsBounded(data)
 	case Date:
-		return nil, errors.New("not implemented yet")
+		return unmarshalAsDate(data)
 	case Time:
 		return nil, errors.New("not implemented yet")
 	case DateTime:
@@ -117,4 +139,35 @@ func unmarshalAsBounded(data json.RawMessage) (IColumnType, error) {
 	} else {
 		return bounded, nil
 	}
+}
+
+func unmarshalAsDate(data json.RawMessage) (IColumnType, error) {
+	var actual DateColumnType
+	var temp struct {
+		Name   DataType   `json:"name"`
+		Min    string     `json:"min"`
+		Max    string     `json:"max"`
+		Format DateFormat `json:"format"`
+	}
+	if err := json.Unmarshal(data, &temp); err != nil {
+		return nil, err
+	}
+
+	min, err := time.Parse("2006-01-02", temp.Min)
+	if err != nil {
+		return nil, err
+	}
+
+	max, err := time.Parse("2006-01-02", temp.Max)
+	if err != nil {
+		return nil, err
+	}
+
+	actual.Name = temp.Name
+	actual.Min = min
+	actual.Max = max
+	actual.Format = temp.Format
+
+	fmt.Println(actual)
+	return actual, nil
 }
