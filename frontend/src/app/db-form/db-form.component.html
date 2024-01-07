@@ -11,5 +11,8 @@
     <option *ngFor="let format of Format | keyvalue" [value]="format.key">{{format.value}}</option>
   </select>
 
-  <button type="submit">Generate Data</button>
+  <button type="submit" (click)="onPreviewClick()">Preview</button>
+  <button type="submit" (click)="onGenerateClick()">Generate Data</button>
 </form>
+
+<div *ngIf="previewData" style="white-space:pre">{{previewData | json }}</div>

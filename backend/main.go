@@ -50,7 +50,8 @@ func main() {
 
 	app := application{db: db}
 
-	http.HandleFunc("/", app.handler)
+	http.HandleFunc("/", app.generateHandler)
+	http.HandleFunc("/preview/", app.previewHandler)
 	log.Fatal(http.ListenAndServe(":4000", addCORSHeaders(http.DefaultServeMux)))
 }
 

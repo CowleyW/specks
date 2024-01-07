@@ -1,15 +1,16 @@
 import { Component } from '@angular/core';
-import {FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
+import {FormBuilder, FormGroup, ReactiveFormsModule} from "@angular/forms";
 import {CommonModule} from "@angular/common";
 import {SchemaEntryComponent} from "../schema-entry/schema-entry.component";
 import {ApiService} from "../services/api.service";
 import {TablesService} from "../services/tables.service";
 import {ConverterFactory, Format} from "../services/converter";
+import {JSONFormatPipe} from "../pipes/format";
 
 @Component({
   selector: 'app-db-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, SchemaEntryComponent],
+  imports: [CommonModule, ReactiveFormsModule, SchemaEntryComponent, JSONFormatPipe],
   templateUrl: './db-form.component.html',
   styleUrl: './db-form.component.css'
 })
@@ -17,19 +18,29 @@ export class DbFormComponent {
   dbForm: FormGroup;
   api: ApiService;
 
+  generateClicked: boolean;
+
+  previewData?: string;
+
   constructor(protected tables: TablesService, api: ApiService, fb: FormBuilder) {
     this.api = api;
     this.dbForm = tables.tablesForm;
     tables.addNewTable();
+
+    this.generateClicked = false;
   }
 
-  onSubmit() {
+  onSubmit(): void {
     if (!this.dbForm.valid) {
       console.log("DB Form is invalid");
       return;
     }
 
-    this.generateData();
+    if (this.generateClicked) {
+      this.generateData();
+    } else {
+      this.preview();
+    }
   }
 
   generateData() {
@@ -48,6 +59,30 @@ export class DbFormComponent {
       },
       error: (error) => console.error("Error generating data\n", error)
     });
+  }
+
+  preview() {
+    this.api.generatePreview(this.tables.toJSON()).subscribe({
+      next: (response) => {
+        console.log("Success\n", JSON.stringify(response));
+
+        const format: Format = this.dbForm.get('outputFormat')!.value;
+        const converter = ConverterFactory.createConverter(format);
+
+        if (converter != null) {
+          this.previewData = response;
+        }
+      },
+      error: (error) => console.error("Error generating preview data\n", error)
+    })
+  }
+
+  onGenerateClick() {
+    this.generateClicked = true;
+  }
+
+  onPreviewClick() {
+    this.generateClicked = false;
   }
 
   protected readonly Format = Format;

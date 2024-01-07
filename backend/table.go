@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"math/rand"
 )
 
@@ -25,6 +26,7 @@ func GenerateTableData(desc TableDesc, dataTables []TableData, r *rand.Rand, db 
 	// improvement
 	it := uint(0)
 	row := uint(0)
+	fmt.Printf("Num Rows: %d.\n", desc.NumRows)
 	for row < desc.NumRows {
 		if it > 3*desc.NumRows {
 			return t, errors.New("exceeded maximum attempts")

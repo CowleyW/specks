@@ -18,4 +18,14 @@ export class ApiService {
 
     return this.http.post<any>(`http://localhost:4001/`, template, {headers});
   }
+
+  generatePreview(template: any): Observable<any> {
+    console.log(JSON.stringify(template));
+
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+
+    return this.http.post<any>(`http://localhost:4001/preview/`, template, {headers});
+  }
 }
