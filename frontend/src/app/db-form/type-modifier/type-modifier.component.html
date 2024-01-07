@@ -52,4 +52,17 @@
       <option *ngFor="let f of tables.dateFormats" [value]="f">{{ f }}</option>
     </select>
   </ng-container>
+
+  <ng-container *ngIf="columnType.get('name')?.value === 'Time'" [formGroup]="columnType">
+    <label for="columnTypeMin{{tableIdx}}({{columnIdx}})">Min</label>
+    <input type="time" formControlName="min" id="columnTypeMin{{tableIdx}}({{columnIdx}})"/>
+
+    <label for="columnTypeMax{{tableIdx}}({{columnIdx}})">Max</label>
+    <input type="time" formControlName="max" id="columnTypeMax{{tableIdx}}({{columnIdx}})"/>
+
+    <label for="columnTypeFormat{{tableIdx}}({{columnIdx}})">Format</label>
+    <select formControlName="format" id="columnTypeFormat{{tableIdx}}({{columnIdx}})">
+      <option *ngFor="let f of tables.timeFormats" [value]="f">{{ f }}</option>
+    </select>
+  </ng-container>
 </ng-container>

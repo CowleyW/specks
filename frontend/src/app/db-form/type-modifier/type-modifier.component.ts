@@ -55,6 +55,12 @@ export class TypeModifierComponent implements OnInit {
         this.columnType.get('format')!.setValue("YYYY-MM-DD");
 
         break;
+      case 'Time':
+        this.columnType.get('min')!.setValue("00:00");
+        this.columnType.get('max')!.setValue("23:59");
+        this.columnType.get('format')!.setValue("hh:mm:ss");
+
+        break;
       case 'Age':
         this.columnType.get('min')!.setValue(18);
         this.columnType.get('max')!.setValue(100);

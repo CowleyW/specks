@@ -9,13 +9,11 @@ import {Format} from "./converter";
 export class TablesService {
   private formBuilder: FormBuilder;
 
-  // TODO: Make private
   tablesForm: FormGroup;
 
   public types: ColumnType[] = [
     new BasicColumnType("First Name"),
     new BasicColumnType("Last Name"),
-    new BasicColumnType("Character"),
     new BoundedColumnType("Age", 18, 100),
     new BasicColumnType("Color"),
     new BasicColumnType("Boolean"),
@@ -29,6 +27,10 @@ export class TablesService {
 
   public dateFormats: string[] = [
     "YYYY-MM-DD"
+  ]
+
+  public timeFormats: string[] = [
+    "hh:mm:ss"
   ]
 
   constructor(private injector: Injector) {
@@ -183,12 +185,18 @@ export class TablesService {
   columnTypeToJSON(columnType: FormGroup): any {
     switch (columnType.get('name')!.value) {
       case 'Date':
-      case 'Time':
       case 'Datetime':
         return {
           name: columnType.get('name')!.value,
           min: columnType.get('min')!.value,
           max: columnType.get('max')!.value,
+          format: columnType.get('format')!.value
+        }
+      case 'Time':
+        return {
+          name: columnType.get('name')!.value,
+          min: `${columnType.get('min')!.value}:00`,
+          max: `${columnType.get('max')!.value}:59`,
           format: columnType.get('format')!.value
         }
       case 'Age':

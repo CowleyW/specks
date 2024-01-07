@@ -15,7 +15,6 @@ type DataType string
 const (
 	FirstName    DataType = "First Name"
 	LastName              = "Last Name"
-	Character             = "Character"
 	Age                   = "Age"
 	Color                 = "Color"
 	Boolean               = "Boolean"
@@ -107,6 +106,15 @@ func (dct DateColumnType) GenerateEntry(desc TableDesc, rowNumber uint, r *rand.
 		default:
 			return nil, errors.New("todo")
 		}
+	case Time:
+		random := r.Int63n(dct.Max.Unix()-dct.Min.Unix()) + dct.Min.Unix()
+		datetime := time.Unix(random, 0)
+		switch dct.Format {
+		case HH_MM_SS:
+			return fmt.Sprintf("%02d:%02d:%02d", datetime.Hour(), datetime.Minute(), datetime.Second()), nil
+		default:
+			return nil, errors.New("todo")
+		}
 	default:
 		return nil, errors.New("unknown column data type")
 	}
@@ -123,8 +131,6 @@ func ConstructColumnType(data json.RawMessage) (IColumnType, error) {
 		return basic, nil
 	case LastName:
 		return basic, nil
-	case Character:
-		return nil, errors.New("not implemented yet")
 	case Age:
 		return unmarshalAsBounded(data)
 	case Color:
@@ -140,7 +146,7 @@ func ConstructColumnType(data json.RawMessage) (IColumnType, error) {
 	case Date:
 		return unmarshalAsDate(data)
 	case Time:
-		return nil, errors.New("not implemented yet")
+		return unmarshalAsDate(data)
 	case Datetime:
 		return unmarshalAsDate(data)
 	default:
@@ -169,14 +175,38 @@ func unmarshalAsDate(data json.RawMessage) (IColumnType, error) {
 		return nil, err
 	}
 
-	min, err := time.Parse("2006-01-02", temp.Min)
-	if err != nil {
-		return nil, err
-	}
-
-	max, err := time.Parse("2006-01-02", temp.Max)
-	if err != nil {
-		return nil, err
+	var min, max time.Time
+	var err error
+	switch temp.Name {
+	case Date:
+		min, err = parseDate(temp.Min)
+		if err != nil {
+			return nil, err
+		}
+		max, err = parseDate(temp.Max)
+		if err != nil {
+			return nil, err
+		}
+	case Datetime:
+		min, err = parseDate(temp.Min)
+		if err != nil {
+			return nil, err
+		}
+		max, err = parseDate(temp.Max)
+		if err != nil {
+			return nil, err
+		}
+	case Time:
+		min, err = parseTime(temp.Min)
+		if err != nil {
+			return nil, err
+		}
+		max, err = parseTime(temp.Max)
+		if err != nil {
+			return nil, err
+		}
+	default:
+		return nil, errors.New("unknown column type")
 	}
 
 	actual.Name = temp.Name
@@ -186,4 +216,12 @@ func unmarshalAsDate(data json.RawMessage) (IColumnType, error) {
 
 	fmt.Println(actual)
 	return actual, nil
+}
+
+func parseTime(t string) (time.Time, error) {
+	return time.Parse("15:04:05", t)
+}
+
+func parseDate(date string) (time.Time, error) {
+	return time.Parse("2006-01-02", date)
 }
