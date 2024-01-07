@@ -45,6 +45,7 @@ export class TypeModifierComponent implements OnInit {
 
     switch (type) {
       case 'Date':
+      case 'Datetime':
         let today = new Date();
         let oneYearAgo = new Date(today);
         oneYearAgo.setFullYear(today.getFullYear() - 1);

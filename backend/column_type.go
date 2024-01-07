@@ -24,7 +24,7 @@ const (
 	RandomNumber          = "Random Number"
 	Date                  = "Date"
 	Time                  = "Time"
-	DateTime              = "DateTime"
+	Datetime              = "Datetime"
 )
 
 type IColumnType interface {
@@ -83,16 +83,32 @@ type DateColumnType struct {
 }
 
 func (dct DateColumnType) GenerateEntry(desc TableDesc, rowNumber uint, r *rand.Rand, db *sql.DB) (any, error) {
-	min := daysSinceEpoch(dct.Min)
-	max := daysSinceEpoch(dct.Max)
-	random := r.Intn(max-min) + min
-	date := time.Unix(int64(random*86400), 0)
+	switch dct.Name {
+	case Date:
+		min := daysSinceEpoch(dct.Min)
+		max := daysSinceEpoch(dct.Max)
+		random := r.Intn(max-min) + min
+		date := time.Unix(int64(random*86400), 0)
 
-	switch dct.Format {
-	case YYYY_MM_DD:
-		return fmt.Sprintf("%04d-%02d-%02d", date.Year(), date.Month(), date.Day()), nil
+		switch dct.Format {
+		case YYYY_MM_DD:
+			return fmt.Sprintf("%04d-%02d-%02d", date.Year(), date.Month(), date.Day()), nil
+		default:
+			return nil, errors.New("todo")
+		}
+	case Datetime:
+		random := r.Int63n(dct.Max.Unix()-dct.Min.Unix()) + dct.Min.Unix()
+		datetime := time.Unix(random, 0)
+		switch dct.Format {
+		case YYYY_MM_DD:
+			return fmt.Sprintf("%04d-%02d-%02d %02d:%02d:%02d",
+				datetime.Year(), datetime.Month(), datetime.Day(),
+				datetime.Hour(), datetime.Minute(), datetime.Second()), nil
+		default:
+			return nil, errors.New("todo")
+		}
 	default:
-		return nil, errors.New("todo")
+		return nil, errors.New("unknown column data type")
 	}
 }
 
@@ -125,8 +141,8 @@ func ConstructColumnType(data json.RawMessage) (IColumnType, error) {
 		return unmarshalAsDate(data)
 	case Time:
 		return nil, errors.New("not implemented yet")
-	case DateTime:
-		return nil, errors.New("not implemented yet")
+	case Datetime:
+		return unmarshalAsDate(data)
 	default:
 		return nil, errors.New("unknown column data type")
 	}
