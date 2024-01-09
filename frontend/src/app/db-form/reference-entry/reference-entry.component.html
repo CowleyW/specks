@@ -1,7 +1,7 @@
 <div [formGroup]="reference">
-  <input type="text" formControlName="referenceName" id="referenceName{{tableIdx}}({{referenceIdx}})"/>
+  <input type="text" formControlName="referenceName" id="referenceName{{tableIdx}}({{referenceIdx}})" class="border-2 px-1 rounded"/>
 
-  <select formControlName="referenceColumn" id="referenceColumn{{tableIdx}}({{referenceIdx}})">
+  <select formControlName="referenceColumn" id="referenceColumn{{tableIdx}}({{referenceIdx}})" class="border-2 px-1 rounded mx-2">
     <ng-container *ngFor="let table of tables.getTablesAbove(tableIdx); let ti = index">
         <option *ngFor="let column of tables.getPrimaryKeys(ti); let ci = index" [value]="ti + '-' + ci">
           {{table.get('tableName')!.value}}: {{column.get('columnName')!.value}}
@@ -9,11 +9,15 @@
     </ng-container>
   </select>
 
-  <label for="referencePrimaryKey{{tableIdx}}({{referenceIdx}})">Primary Key</label>
-  <input type="checkbox" formControlName="referencePrimaryKey" id="referencePrimaryKey{{tableIdx}}({{referenceIdx}})"/>
+  <div class="inline">
+    <input type="checkbox" formControlName="referencePrimaryKey" id="referencePrimaryKey{{tableIdx}}({{referenceIdx}})" class="w-4 h-4 mr-1"/>
+    <label for="referencePrimaryKey{{tableIdx}}({{referenceIdx}})">Primary Key</label>
+  </div>
 
-  <label for="referenceUnique{{tableIdx}}({{referenceIdx}})">Unique</label>
-  <input type="checkbox" formControlName="referenceUnique" id="referenceUnique{{tableIdx}}({{referenceIdx}})"/>
+  <div class="inline mx-2">
+    <input type="checkbox" formControlName="referenceUnique" id="referenceUnique{{tableIdx}}({{referenceIdx}})" class="w-4 h-4 mr-1"/>
+    <label for="referenceUnique{{tableIdx}}({{referenceIdx}})">Unique</label>
+  </div>
 
-  <button (click)="tables.removeReference(tableIdx, referenceIdx)">Remove</button>
+  <button (click)="tables.removeReference(tableIdx, referenceIdx)" class="border-2 px-1 rounded border-red-500 text-red-500">Remove</button>
 </div>

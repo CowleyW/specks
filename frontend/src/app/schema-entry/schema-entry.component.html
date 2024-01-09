@@ -1,28 +1,31 @@
-<div [formGroup]="table">
-  <input type="text" formControlName="tableName" id="tableName{{tableIdx}}">
+<div [formGroup]="table" class="p-2">
+  <input type="text" formControlName="tableName" id="tableName{{tableIdx}}" class="text-lg border-2 px-1 rounded">
   <!-- Columns -->
-  <div>
+  <div class="my-2">
     <ng-container *ngFor="let column of tables.getColumns(tableIdx); let ci = index">
-      <div [formGroup]="column">
-        <input type="text" formControlName="columnName" id="columnName{{tableIdx}}({{ci}})">
-
-        <app-type-modifier [column]="column" [tableIdx]="tableIdx" [columnIdx]="ci"></app-type-modifier>
-        <button type="button" (click)="tables.removeColumn(tableIdx, ci)">Remove</button>
+      <div [formGroup]="column" class="my-1">
+        <app-column-entry [column]="column" [tableIdx]="tableIdx" [columnIdx]="ci"></app-column-entry>
       </div>
     </ng-container>
-    <button type="button" (click)="tables.addNewColumn(tableIdx)">Add Column</button>
+    <button type="button" (click)="tables.addNewColumn(tableIdx)" class="border-2 px-1 rounded">Add Column</button>
   </div>
 
   <!-- References -->
-  <div>
+  <div class="my-2">
     <ng-container *ngFor="let reference of tables.getReferences(tableIdx); let ri = index">
-      <app-reference-entry [reference]="reference" [tableIdx]="tableIdx" [referenceIdx]="ri"></app-reference-entry>
+      <div class="my-1">
+        <app-reference-entry [reference]="reference" [tableIdx]="tableIdx" [referenceIdx]="ri"></app-reference-entry>
+      </div>
     </ng-container>
-    <button type="button" (click)="tables.addNewReference(tableIdx)">Add Reference</button>
+    <button type="button" (click)="tables.addNewReference(tableIdx)"
+            class="border-2 px-1 rounded disabled:bg-gray-200 disabled:text-neutral-700" [disabled]="!tables.hasReferencableColumn(tableIdx)">Add Reference
+    </button>
   </div>
 
-  <label for="numRows{{tableIdx}}">Rows</label>
-  <input type="number" formControlName="numRows" id="numRows{{tableIdx}}">
+  <div>
+    <label for="numRows{{tableIdx}}" class="mr-1">Rows</label>
+    <input type="number" formControlName="numRows" id="numRows{{tableIdx}}" class="border-2 px-1 rounded">
 
-  <button type="button" (click)="tables.removeTable(tableIdx)">Remove Table</button>
+    <button type="button" (click)="tables.removeTable(tableIdx)" class="border-2 rounded px-1 ml-4 border-red-500 text-red-500">Remove Table</button>
+  </div>
 </div>

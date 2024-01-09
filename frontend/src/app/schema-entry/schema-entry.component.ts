@@ -9,7 +9,7 @@ import {
   Validators
 } from "@angular/forms";
 import {NgForOf} from "@angular/common";
-import {TypeModifierComponent} from "../db-form/type-modifier/type-modifier.component";
+import {ColumnEntryComponent} from "../db-form/column-entry/column-entry.component";
 import {BasicColumnType} from "../services/type.service";
 import {TablesService} from "../services/tables.service";
 import {ReferenceEntryComponent} from "../db-form/reference-entry/reference-entry.component";
@@ -20,7 +20,7 @@ import {ReferenceEntryComponent} from "../db-form/reference-entry/reference-entr
   imports: [
     NgForOf,
     ReactiveFormsModule,
-    TypeModifierComponent,
+    ColumnEntryComponent,
     ReferenceEntryComponent
   ],
   templateUrl: './schema-entry.component.html',

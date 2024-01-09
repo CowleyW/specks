@@ -6,7 +6,7 @@ import {TablesService} from "../../services/tables.service";
 import {ColumnTypeMaxDatePipe, ColumnTypeMinDatePipe} from "../../pipes/column-type-pipe";
 
 @Component({
-  selector: 'app-type-modifier',
+  selector: 'app-column-entry',
   standalone: true,
   imports: [
     FormsModule,
@@ -18,10 +18,10 @@ import {ColumnTypeMaxDatePipe, ColumnTypeMinDatePipe} from "../../pipes/column-t
     DatePipe,
     ColumnTypeMaxDatePipe
   ],
-  templateUrl: './type-modifier.component.html',
-  styleUrl: './type-modifier.component.css'
+  templateUrl: './column-entry.component.html',
+  styleUrl: './column-entry.component.css'
 })
-export class TypeModifierComponent implements OnInit {
+export class ColumnEntryComponent implements OnInit {
   @Input() column!: FormGroup;
   @Input() columnIdx!: number;
   @Input() tableIdx!: number;
@@ -29,7 +29,15 @@ export class TypeModifierComponent implements OnInit {
   columnType!: FormGroup;
   columnMin!: FormControl;
 
-  constructor(protected tables: TablesService) {}
+  isTypeDate: boolean;
+  isTypeRange: boolean;
+  isTypeTime: boolean;
+
+  constructor(protected tables: TablesService) {
+    this.isTypeTime = false;
+    this.isTypeDate = false;
+    this.isTypeRange = false;
+  }
 
   ngOnInit() {
     this.columnType = this.column.get('columnType')! as FormGroup;
@@ -43,6 +51,10 @@ export class TypeModifierComponent implements OnInit {
     this.columnType.get('max')!.setValue('');
     this.columnType.get('format')!.setValue('');
 
+    this.isTypeTime = false;
+    this.isTypeDate = false;
+    this.isTypeRange = false;
+
     switch (type) {
       case 'Date':
       case 'Datetime':
@@ -53,21 +65,27 @@ export class TypeModifierComponent implements OnInit {
         this.columnType.get('min')!.setValue(oneYearAgo.toISOString().slice(0, 10));
         this.columnType.get('max')!.setValue(today.toISOString().slice(0, 10));
         this.columnType.get('format')!.setValue("YYYY-MM-DD");
+        this.isTypeDate = true;
 
         break;
       case 'Time':
         this.columnType.get('min')!.setValue("00:00");
         this.columnType.get('max')!.setValue("23:59");
         this.columnType.get('format')!.setValue("hh:mm:ss");
+        this.isTypeTime = true;
 
         break;
       case 'Age':
         this.columnType.get('min')!.setValue(18);
         this.columnType.get('max')!.setValue(100);
+        this.isTypeRange = true;
+
         break;
       case 'Random Number':
         this.columnType.get('min')!.setValue(0);
         this.columnType.get('max')!.setValue(100);
+        this.isTypeRange = true;
+
         break;
       default:
         break;

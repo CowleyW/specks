@@ -155,6 +155,17 @@ export class TablesService {
     (table.get('references') as FormArray).removeAt(referenceIndex);
   }
 
+  hasReferencableColumn(tableIndex: number): boolean {
+    const tablesAbove = this.getTablesAbove(tableIndex);
+    for (let i = 0; i < tablesAbove.length; i += 1) {
+      if (this.getPrimaryKeys(i).length != 0) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   toJSON() {
     return this.getTables().map((table: FormGroup, idx: number) => {
       return {

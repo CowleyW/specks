@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TypeModifierComponent } from './type-modifier.component';
+import { ColumnEntryComponent } from './column-entry.component';
 
 describe('TypeModifierComponent', () => {
-  let component: TypeModifierComponent;
-  let fixture: ComponentFixture<TypeModifierComponent>;
+  let component: ColumnEntryComponent;
+  let fixture: ComponentFixture<ColumnEntryComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TypeModifierComponent]
+      imports: [ColumnEntryComponent]
     })
     .compileComponents();
-    
-    fixture = TestBed.createComponent(TypeModifierComponent);
+
+    fixture = TestBed.createComponent(ColumnEntryComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
