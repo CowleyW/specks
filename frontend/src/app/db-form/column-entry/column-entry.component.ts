@@ -6,7 +6,7 @@ import {TablesService} from "../../services/tables.service";
 import {ColumnTypeMaxDatePipe, ColumnTypeMinDatePipe} from "../../pipes/column-type-pipe";
 
 @Component({
-  selector: 'app-column-entry',
+  selector: '[app-column-entry]',
   standalone: true,
   imports: [
     FormsModule,

@@ -1,31 +1,36 @@
 <form [formGroup]="dbForm" (ngSubmit)="onSubmit()" class="flex flex-col h-screen">
   <div class="sticky top-0 z-50 pt-6 pb-4 mb-2 bg-white shadow">
-    <h1 class="bg-gradient-to-br from-indigo-400 to-cyan-400 text-transparent bg-clip-text text-6xl font-bold text-center py-1">
-      Specks.dev
+    <h1
+      class="bg-gradient-to-br from-indigo-400 to-cyan-400 text-transparent bg-clip-text text-6xl font-bold text-center py-1">
+      Specks
     </h1>
-    <h2 class="text-lg font-medium text-center">
+    <h2 class="text-xl font-medium text-center">
       Generate comprehensive test datasets easily.
     </h2>
 
     <div class="flex justify-center pt-2">
       <select formControlName="outputFormat" id="outputFormat" class="border-2 rounded px-1 text-lg font-medium">
-        <option *ngFor="let format of Format | keyvalue" [value]="format.key">{{format.value}}</option>
+        <option *ngFor="let format of Format | keyvalue" [value]="format.key">{{ format.value }}</option>
       </select>
 
-      <button type="submit" (click)="onPreviewClick()" class="border-2 rounded px-1 mx-2 text-lg font-medium">Preview</button>
-      <button type="submit" (click)="onGenerateClick()" class="bg-sky-500 text-white text-lg font-medium rounded px-1">Generate Data</button>
+      <button type="submit" (click)="onPreviewClick()" class="border-2 rounded hover:bg-gray-200 px-4 py-2 mx-2 text-lg font-medium">Preview
+      </button>
+      <button type="submit" (click)="onGenerateClick()" class="bg-sky-500 hover:bg-cyan-600 text-white text-lg font-medium rounded px-4 py-2">
+        Generate Data
+      </button>
     </div>
   </div>
 
-  <div formArrayName="tables" class="grow my-2 flex justify-center">
-    <div class="max-w-7xl">
+  <div formArrayName="tables" class="grow my-2 flex">
+    <div>
       <div class="mr-auto" *ngFor="let table of tables.getTables(); let ti = index">
         <app-schema-entry [table]="table" [tableIdx]="ti"/>
       </div>
 
-      <button type="button" (click)="tables.addNewTable()" class="border-2 border-sky-500 text-sky-500 rounded px-1 ml-2 my-4">Add Table</button>
+      <button type="button" (click)="tables.addNewTable()"
+              class="text-white font-medium bg-sky-500 hover:bg-cyan-600 rounded px-4 py-2 ml-2 my-4">Add Table
+      </button>
     </div>
-
   </div>
 
   <footer class="bg-gradient-to-br from-indigo-400 to-cyan-400 sticky bottom-0 z-50">
@@ -40,5 +45,3 @@
     </div>
   </footer>
 </form>
-
-<div *ngIf="previewData" style="white-space:pre">{{previewData | json }}</div>

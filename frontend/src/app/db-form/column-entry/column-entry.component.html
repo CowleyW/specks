@@ -1,73 +1,81 @@
 <ng-container [formGroup]="column">
-  <input type="text" formControlName="columnName" id="columnName{{tableIdx}}({{columnIdx}})"
-         class="border-2 px-1 rounded">
+  <td>
+    <input type="text" formControlName="columnName" id="columnName{{tableIdx}}({{columnIdx}})"
+             class="border px-1 rounded">
+  </td>
 
   <!-- Column type selector -->
-  <ng-container [formGroup]="columnType">
+  <td [formGroup]="columnType">
     <select formControlName="name" id="columnType{{tableIdx}}({{columnIdx}})" (change)="initType($event)"
-            class="border-2 px-1 rounded mx-2">
+            class="border px-1 rounded">
       <option *ngFor="let t of tables.types" [value]="t.name">{{ t.name }}</option>
     </select>
-  </ng-container>
+  </td>
 
   <!-- Common type modifiers -->
-  <div class="inline">
-    <input type="checkbox" formControlName="columnPrimaryKey" id="columnPrimaryKey{{tableIdx}}({{columnIdx}})"
-           class="w-4 h-4 mr-1"/>
-    <label for="columnPrimaryKey{{tableIdx}}({{columnIdx}})">Primary Key</label>
-  </div>
+  <td>
+    <div class="inline">
+      <input type="checkbox" formControlName="columnPrimaryKey" id="columnPrimaryKey{{tableIdx}}({{columnIdx}})"
+             class="w-4 h-4 mr-1"/>
+      <label for="columnPrimaryKey{{tableIdx}}({{columnIdx}})">Primary Key</label>
+    </div>
 
-  <div class="inline ml-2">
-    <input type="checkbox" formControlName="columnUnique" id="columnUnique{{tableIdx}}({{columnIdx}})"
-           class="w-4 h-4 mr-1"/>
-    <label for="columnUnique{{tableIdx}}({{columnIdx}})">Unique</label>
-  </div>
+    <div class="inline ml-2">
+      <input type="checkbox" formControlName="columnUnique" id="columnUnique{{tableIdx}}({{columnIdx}})"
+             class="w-4 h-4 mr-1"/>
+      <label for="columnUnique{{tableIdx}}({{columnIdx}})">Unique</label>
+    </div>
 
-  <!--
-  Containers for specific type modifiers.
-  -->
+    <!--
+    Containers for specific type modifiers.
+    -->
 
-  <ng-container *ngIf="isTypeRange" [formGroup]="columnType">
-    <label for="columnTypeMin{{tableIdx}}({{columnIdx}})" class="ml-2 mr-1">Min</label>
-    <input type="number" formControlName="min" id="columnTypeMin{{tableIdx}}({{columnIdx}})"
-           class="border-2 rounded px-1"/>
+    <ng-container *ngIf="isTypeRange" [formGroup]="columnType">
+      <label for="columnTypeMin{{tableIdx}}({{columnIdx}})" class="ml-2 mr-1">Min</label>
+      <input type="number" formControlName="min" id="columnTypeMin{{tableIdx}}({{columnIdx}})"
+             class="border rounded px-1"/>
 
-    <label for="columnTypeMax{{tableIdx}}({{columnIdx}})" class="ml-2 mr-1">Max</label>
-    <input type="number" formControlName="max" id="columnTypeMax{{tableIdx}}({{columnIdx}})"
-           class="border-2 rounded px-1"/>
-  </ng-container>
+      <label for="columnTypeMax{{tableIdx}}({{columnIdx}})" class="ml-2 mr-1">Max</label>
+      <input type="number" formControlName="max" id="columnTypeMax{{tableIdx}}({{columnIdx}})"
+             class="border rounded px-1"/>
+    </ng-container>
 
-  <ng-container *ngIf="isTypeDate" [formGroup]="columnType">
-    <label for="columnTypeMin{{tableIdx}}({{columnIdx}})" class="ml-2 mr-1">Min</label>
-    <input type="date" formControlName="min" id="columnTypeMin{{tableIdx}}({{columnIdx}})"
-           class="border-2 rounded px-1"/>
+    <ng-container *ngIf="isTypeDate" [formGroup]="columnType">
+      <label for="columnTypeMin{{tableIdx}}({{columnIdx}})" class="ml-2 mr-1">Min</label>
+      <input type="date" formControlName="min" id="columnTypeMin{{tableIdx}}({{columnIdx}})"
+             class="border rounded px-1"/>
 
-    <label for="columnTypeMax{{tableIdx}}({{columnIdx}})" class="ml-2 mr-1">Max</label>
-    <input type="date" formControlName="max" id="columnTypeMax{{tableIdx}}({{columnIdx}})"
-           class="border-2 rounded px-1"/>
+      <label for="columnTypeMax{{tableIdx}}({{columnIdx}})" class="ml-2 mr-1">Max</label>
+      <input type="date" formControlName="max" id="columnTypeMax{{tableIdx}}({{columnIdx}})"
+             class="border rounded px-1"/>
 
-    <label for="columnTypeFormat{{tableIdx}}({{columnIdx}})" class="ml-2 mr-1">Format</label>
-    <select formControlName="format" id="columnTypeFormat{{tableIdx}}({{columnIdx}})" class="border-2 rounded px-1">
-      <option *ngFor="let f of tables.dateFormats" [value]="f">{{ f }}</option>
-    </select>
-  </ng-container>
+      <label for="columnTypeFormat{{tableIdx}}({{columnIdx}})" class="ml-2 mr-1">Format</label>
+      <select formControlName="format" id="columnTypeFormat{{tableIdx}}({{columnIdx}})" class="border rounded px-1">
+        <option *ngFor="let f of tables.dateFormats" [value]="f">{{ f }}</option>
+      </select>
+    </ng-container>
 
-  <ng-container *ngIf="isTypeTime" [formGroup]="columnType">
-    <label for="columnTypeMin{{tableIdx}}({{columnIdx}})" class="ml-2 mr-1">Min</label>
-    <input type="time" formControlName="min" id="columnTypeMin{{tableIdx}}({{columnIdx}})"
-           class="border-2 rounded px-1"/>
+    <ng-container *ngIf="isTypeTime" [formGroup]="columnType">
+      <label for="columnTypeMin{{tableIdx}}({{columnIdx}})" class="ml-2 mr-1">Min</label>
+      <input type="time" formControlName="min" id="columnTypeMin{{tableIdx}}({{columnIdx}})"
+             class="border-2 rounded px-1"/>
 
-    <label for="columnTypeMax{{tableIdx}}({{columnIdx}})" class="ml-2 mr-1">Max</label>
-    <input type="time" formControlName="max" id="columnTypeMax{{tableIdx}}({{columnIdx}})"
-           class="border-2 rounded px-1"/>
+      <label for="columnTypeMax{{tableIdx}}({{columnIdx}})" class="ml-2 mr-1">Max</label>
+      <input type="time" formControlName="max" id="columnTypeMax{{tableIdx}}({{columnIdx}})"
+             class="border-2 rounded px-1"/>
 
-    <label for="columnTypeFormat{{tableIdx}}({{columnIdx}})" class="ml-2 mr-1">Format</label>
-    <select formControlName="format" id="columnTypeFormat{{tableIdx}}({{columnIdx}})" class="border-2 rounded px-1">
-      <option *ngFor="let f of tables.timeFormats" [value]="f">{{ f }}</option>
-    </select>
-  </ng-container>
+      <label for="columnTypeFormat{{tableIdx}}({{columnIdx}})" class="ml-2 mr-1">Format</label>
+      <select formControlName="format" id="columnTypeFormat{{tableIdx}}({{columnIdx}})" class="border rounded px-1">
+        <option *ngFor="let f of tables.timeFormats" [value]="f">{{ f }}</option>
+      </select>
+    </ng-container>
 
-  <button type="button" (click)="tables.removeColumn(tableIdx, columnIdx)"
-          class="border-2 border-red-500 text-red-500 px-1 rounded ml-2">Remove
-  </button>
+    <button type="button" (click)="tables.removeColumn(tableIdx, columnIdx)" class="ml-2 fill-gray-500">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" id="x">
+        <g fill="none" fill-rule="evenodd" stroke="#aaa" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+          <path d="M13 1 1 13M1 1l12 12"></path>
+        </g>
+      </svg>
+    </button>
+  </td>
 </ng-container>

@@ -1,23 +1,39 @@
-<div [formGroup]="reference">
-  <input type="text" formControlName="referenceName" id="referenceName{{tableIdx}}({{referenceIdx}})" class="border-2 px-1 rounded"/>
+<ng-container [formGroup]="reference">
+  <td>
+    <input type="text" formControlName="referenceName" id="referenceName{{tableIdx}}({{referenceIdx}})"
+           class="border px-1 rounded"/>
+  </td>
 
-  <select formControlName="referenceColumn" id="referenceColumn{{tableIdx}}({{referenceIdx}})" class="border-2 px-1 rounded mx-2">
-    <ng-container *ngFor="let table of tables.getTablesAbove(tableIdx); let ti = index">
+  <td>
+    <select formControlName="referenceColumn" id="referenceColumn{{tableIdx}}({{referenceIdx}})"
+            class="border px-1 rounded mx-2">
+      <ng-container *ngFor="let table of tables.getTablesAbove(tableIdx); let ti = index">
         <option *ngFor="let column of tables.getPrimaryKeys(ti); let ci = index" [value]="ti + '-' + ci">
-          {{table.get('tableName')!.value}}: {{column.get('columnName')!.value}}
+          {{ table.get('tableName')!.value }}: {{ column.get('columnName')!.value }}
         </option>
-    </ng-container>
-  </select>
+      </ng-container>
+    </select>
+  </td>
 
-  <div class="inline">
-    <input type="checkbox" formControlName="referencePrimaryKey" id="referencePrimaryKey{{tableIdx}}({{referenceIdx}})" class="w-4 h-4 mr-1"/>
-    <label for="referencePrimaryKey{{tableIdx}}({{referenceIdx}})">Primary Key</label>
-  </div>
+  <td>
+    <div class="inline">
+      <input type="checkbox" formControlName="referencePrimaryKey" id="referencePrimaryKey{{tableIdx}}({{referenceIdx}})"
+             class="w-4 h-4 mr-1"/>
+      <label for="referencePrimaryKey{{tableIdx}}({{referenceIdx}})">Primary Key</label>
+    </div>
 
-  <div class="inline mx-2">
-    <input type="checkbox" formControlName="referenceUnique" id="referenceUnique{{tableIdx}}({{referenceIdx}})" class="w-4 h-4 mr-1"/>
-    <label for="referenceUnique{{tableIdx}}({{referenceIdx}})">Unique</label>
-  </div>
+    <div class="inline mx-2">
+      <input type="checkbox" formControlName="referenceUnique" id="referenceUnique{{tableIdx}}({{referenceIdx}})"
+             class="w-4 h-4 mr-1"/>
+      <label for="referenceUnique{{tableIdx}}({{referenceIdx}})">Unique</label>
+    </div>
+  </td>
 
-  <button (click)="tables.removeReference(tableIdx, referenceIdx)" class="border-2 px-1 rounded border-red-500 text-red-500">Remove</button>
-</div>
+  <button (click)="tables.removeReference(tableIdx, referenceIdx)">
+    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" id="x">
+      <g fill="none" fill-rule="evenodd" stroke="#aaa" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+        <path d="M13 1 1 13M1 1l12 12"></path>
+      </g>
+    </svg>
+  </button>
+</ng-container>

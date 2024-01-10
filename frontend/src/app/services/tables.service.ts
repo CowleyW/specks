@@ -86,6 +86,8 @@ export class TablesService {
   addNewTable(): void {
     let tableForm = this.newTableForm();
     this.getTables().push(tableForm);
+
+    this.addNewColumn(this.getTables().length - 1);
   }
 
   getTables(): FormGroup[] {

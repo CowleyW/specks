@@ -4,7 +4,7 @@ import {TablesService} from "../../services/tables.service";
 import {NgForOf, NgIf} from "@angular/common";
 
 @Component({
-  selector: 'app-reference-entry',
+  selector: '[app-reference-entry]',
   standalone: true,
   imports: [
     NgForOf,

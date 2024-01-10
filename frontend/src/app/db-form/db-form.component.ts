@@ -22,7 +22,7 @@ export class DbFormComponent {
 
   previewData?: string;
 
-  constructor(protected tables: TablesService, api: ApiService, fb: FormBuilder) {
+  constructor(protected tables: TablesService, api: ApiService) {
     this.api = api;
     this.dbForm = tables.tablesForm;
     tables.addNewTable();
@@ -31,11 +31,6 @@ export class DbFormComponent {
   }
 
   onSubmit(): void {
-    if (!this.dbForm.valid) {
-      console.log("DB Form is invalid");
-      return;
-    }
-
     if (this.generateClicked) {
       this.generateData();
     } else {

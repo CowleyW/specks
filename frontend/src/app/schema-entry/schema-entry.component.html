@@ -1,31 +1,43 @@
-<div [formGroup]="table" class="p-2">
-  <input type="text" formControlName="tableName" id="tableName{{tableIdx}}" class="text-lg border-2 px-1 rounded">
-  <!-- Columns -->
-  <div class="my-2">
-    <ng-container *ngFor="let column of tables.getColumns(tableIdx); let ci = index">
-      <div [formGroup]="column" class="my-1">
-        <app-column-entry [column]="column" [tableIdx]="tableIdx" [columnIdx]="ci"></app-column-entry>
-      </div>
-    </ng-container>
-    <button type="button" (click)="tables.addNewColumn(tableIdx)" class="border-2 px-1 rounded">Add Column</button>
-  </div>
+<div [formGroup]="table" class="p-2 rounded hover:bg-neutral-50 m-2">
+  <div class="flex justify-between col-span-3">
+    <input type="text" formControlName="tableName" id="tableName{{tableIdx}}" class="text-lg border px-1 rounded">
 
-  <!-- References -->
-  <div class="my-2">
-    <ng-container *ngFor="let reference of tables.getReferences(tableIdx); let ri = index">
-      <div class="my-1">
-        <app-reference-entry [reference]="reference" [tableIdx]="tableIdx" [referenceIdx]="ri"></app-reference-entry>
-      </div>
-    </ng-container>
-    <button type="button" (click)="tables.addNewReference(tableIdx)"
-            class="border-2 px-1 rounded disabled:bg-gray-200 disabled:text-neutral-700" [disabled]="!tables.hasReferencableColumn(tableIdx)">Add Reference
+    <button type="button" (click)="tables.removeTable(tableIdx)" class="ml-2">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" id="x">
+        <g fill="none" fill-rule="evenodd" stroke="#aaa" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+          <path d="M13 1 1 13M1 1l12 12"></path>
+        </g>
+      </svg>
     </button>
   </div>
 
-  <div>
-    <label for="numRows{{tableIdx}}" class="mr-1">Rows</label>
-    <input type="number" formControlName="numRows" id="numRows{{tableIdx}}" class="border-2 px-1 rounded">
+  <!-- Columns -->
+  <table class="mb-2 mt-1 table-auto text-left">
+    <thead>
+    <tr>
+      <th class="text-xl font-bold pl-1.5 pb-2">Name</th>
+      <th class="text-xl font-bold pl-1.5 pb-2">Type</th>
+      <th class="text-xl font-bold pb-2">Options</th>
+    </tr>
+    </thead>
+    <tbody class="pt-10">
+    <ng-container *ngFor="let column of tables.getColumns(tableIdx); let ci = index" [formGroup]="column" class="my-1">
+      <tr app-column-entry [column]="column" [tableIdx]="tableIdx" [columnIdx]="ci"></tr>
+    </ng-container>
+    <ng-container *ngFor="let reference of tables.getReferences(tableIdx); let ri = index">
+        <tr app-reference-entry [reference]="reference" [tableIdx]="tableIdx" [referenceIdx]="ri"></tr>
+    </ng-container>
+    </tbody>
+  </table>
 
-    <button type="button" (click)="tables.removeTable(tableIdx)" class="border-2 rounded px-1 ml-4 border-red-500 text-red-500">Remove Table</button>
+  <!-- References -->
+  <div class="my-2 col-span-3">
+    <button type="button" (click)="tables.addNewColumn(tableIdx)" class="border px-2 py-0.5 rounded-l">Add Column</button>
+    <button type="button" (click)="tables.addNewReference(tableIdx)"
+            class="border px-2 py-0.5 rounded-r disabled:bg-gray-100 disabled:text-neutral-700"
+            [disabled]="!tables.hasReferencableColumn(tableIdx)">Add Reference
+    </button>
+    <label for="numRows{{tableIdx}}" class="ml-2 mr-1">Rows</label>
+    <input type="number" formControlName="numRows" id="numRows{{tableIdx}}" class="border px-1 rounded">
   </div>
 </div>
