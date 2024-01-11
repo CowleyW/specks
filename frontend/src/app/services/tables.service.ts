@@ -42,7 +42,8 @@ export class TablesService {
   private newDbForm(): FormGroup {
     return this.formBuilder.group({
       tables: this.formBuilder.array([]),
-      outputFormat: [Format.CSV, Validators.required]
+      outputFormat: [Format.CSV, Validators.required],
+      forPreview: [false, Validators.required]
     });
   }
 
@@ -168,31 +169,39 @@ export class TablesService {
     return false;
   }
 
+  setGeneratePreview(forPreview: boolean) {
+    this.tablesForm.get('forPreview')!.setValue(forPreview);
+  }
+
   toJSON() {
-    return this.getTables().map((table: FormGroup, idx: number) => {
-      return {
-        tableName: table.get('tableName')!.value,
-        columns: this.getColumns(idx).map((c: FormGroup, idx: number) => {
-          return {
-            columnName: c.get('columnName')!.value,
-            columnType: this.columnTypeToJSON(c.get('columnType')! as FormGroup),
-            columnPrimaryKey: c.get('columnPrimaryKey')!.value,
-            columnUnique: c.get('columnUnique')!.value
-          };
-        }),
-        references: this.getReferences(idx).map((r: FormGroup) => {
-          return {
-            referenceName: r.get('referenceName')!.value,
-            tableIndex: r.get('tableIndex')!.value,
-            columnName: r.get('columnName')!.value,
-            referencePrimaryKey: r.get('referencePrimaryKey')!.value,
-            referenceUnique: r.get('referenceUnique')!.value,
-            default: null
-          };
-        }),
-        numRows: table.get('numRows')!.value
-      };
-    });
+    return {
+      tablesDescs: this.getTables().map((table: FormGroup, idx: number) => {
+        return {
+          tableName: table.get('tableName')!.value,
+          columns: this.getColumns(idx).map((c: FormGroup) => {
+            return {
+              columnName: c.get('columnName')!.value,
+              columnType: this.columnTypeToJSON(c.get('columnType')! as FormGroup),
+              columnPrimaryKey: c.get('columnPrimaryKey')!.value,
+              columnUnique: c.get('columnUnique')!.value
+            };
+          }),
+          references: this.getReferences(idx).map((r: FormGroup) => {
+            return {
+              referenceName: r.get('referenceName')!.value,
+              tableIndex: r.get('tableIndex')!.value,
+              columnName: r.get('columnName')!.value,
+              referencePrimaryKey: r.get('referencePrimaryKey')!.value,
+              referenceUnique: r.get('referenceUnique')!.value,
+              default: null
+            };
+          }),
+          numRows: table.get('numRows')!.value,
+        };
+      }),
+      outputFormat: this.tablesForm.get('outputFormat')!.value,
+      forPreview: this.tablesForm.get('forPreview')!.value
+    };
   }
 
   columnTypeToJSON(columnType: FormGroup): any {
