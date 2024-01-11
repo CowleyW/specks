@@ -80,5 +80,9 @@ export class DbFormComponent {
     this.generateClicked = false;
   }
 
+  clearPreview() {
+    this.previewData = "";
+  }
+
   protected readonly Format = Format;
 }
