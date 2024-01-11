@@ -1,8 +1,6 @@
 package main
 
 import (
-	"archive/zip"
-	"bytes"
 	"database/sql"
 	"encoding/json"
 	"fmt"
@@ -71,32 +69,14 @@ func (app application) generateDataWithLimit(w http.ResponseWriter, r *http.Requ
 			outputData = []byte(csvFiles[0].Data)
 			w.Header().Set("Content-Type", "text/csv")
 		} else {
-			buf := new(bytes.Buffer)
-			zipWriter := zip.NewWriter(buf)
-
-			for _, file := range csvFiles {
-				zipFile, err := zipWriter.Create(file.Name)
-				if err != nil {
-					fmt.Println(err)
-					http.Error(w, "Failed to generate data", http.StatusInternalServerError)
-					return
-				}
-				_, err = zipFile.Write([]byte(file.Data))
-				if err != nil {
-					fmt.Println(err)
-					http.Error(w, "Failed to generate data", http.StatusInternalServerError)
-					return
-				}
-			}
-
-			err := zipWriter.Close()
+			buf, err := zipFiles(csvFiles)
 			if err != nil {
 				fmt.Println(err)
-				http.Error(w, "Failed to generate data", http.StatusInternalServerError)
+				http.Error(w, "Failed to generate data", http.StatusBadRequest)
 				return
 			}
 
-			outputData = buf.Bytes()
+			outputData = buf
 			w.Header().Set("Content-Type", "application/zip")
 		}
 	case JSON:
@@ -113,6 +93,25 @@ func (app application) generateDataWithLimit(w http.ResponseWriter, r *http.Requ
 			http.Error(w, "Not yet implemented", http.StatusInternalServerError)
 		}
 	case SQL:
+		var sqlFiles []OutputFile
+		for _, table := range dataTables {
+			sqlFiles = append(sqlFiles, FormatAsSQL(table))
+		}
+
+		if spec.ForPreview {
+			outputData = []byte(sqlFiles[0].Data)
+			w.Header().Set("Content-Type", "text/plain")
+		} else {
+			buf, err := zipFiles(sqlFiles)
+			if err != nil {
+				fmt.Println(err)
+				http.Error(w, "Failed to generate data", http.StatusBadRequest)
+				return
+			}
+
+			outputData = buf
+			w.Header().Set("Content-Type", "application/zip")
+		}
 	}
 
 	w.WriteHeader(http.StatusOK)

@@ -1,6 +1,8 @@
 package main
 
 import (
+	"archive/zip"
+	"bytes"
 	"database/sql"
 	"errors"
 	"fmt"
@@ -24,4 +26,27 @@ func queryRandomColumn(db *sql.DB, r *rand.Rand, tableName, columnName string) (
 	}
 
 	return name, nil
+}
+
+func zipFiles(files []OutputFile) ([]byte, error) {
+	buf := new(bytes.Buffer)
+	zipWriter := zip.NewWriter(buf)
+
+	for _, file := range files {
+		zipFile, err := zipWriter.Create(file.Name)
+		if err != nil {
+			return nil, err
+		}
+		_, err = zipFile.Write([]byte(file.Data))
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	err := zipWriter.Close()
+	if err != nil {
+		return nil, err
+	}
+
+	return buf.Bytes(), nil
 }
