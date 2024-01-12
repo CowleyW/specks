@@ -17,7 +17,7 @@ export class ApiService {
       'Content-Type': 'application/json'
     });
 
-    return this.http.post<any>(`http://localhost:4001/`, template, {headers});
+    return this.http.post(`http://localhost:4001/`, template, {headers, responseType: 'arraybuffer'});
   }
 
   generateTextPreview(template: any): Observable<string> {

@@ -65,7 +65,7 @@ func FormatAsCSV(data TableData) OutputFile {
 		}
 	}
 
-	file.Name = data.Name
+	file.Name = fmt.Sprintf("%s.csv", file.Name)
 	file.Data = builder.String()
 
 	return file
@@ -104,7 +104,9 @@ func FormatAsSQL(data TableData) OutputFile {
 		for _, value := range data.Entries {
 			switch v := value.(type) {
 			case string:
-				builder.WriteString(v)
+				builder.WriteByte('\'')
+				builder.WriteString(strings.Replace(v, "'", "''", -1))
+				builder.WriteByte('\'')
 			case int:
 				builder.WriteString(strconv.Itoa(v))
 			case bool:
@@ -126,7 +128,7 @@ func FormatAsSQL(data TableData) OutputFile {
 		}
 	}
 
-	file.Name = data.Name
+	file.Name = fmt.Sprintf("%s.sql", file.Name)
 	file.Data = builder.String()
 
 	return file

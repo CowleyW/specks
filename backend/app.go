@@ -90,7 +90,15 @@ func (app application) generateDataWithLimit(w http.ResponseWriter, r *http.Requ
 		if spec.ForPreview {
 			w.Header().Set("Content-Type", "application/json")
 		} else {
-			http.Error(w, "Not yet implemented", http.StatusInternalServerError)
+			file := OutputFile{Name: "tables.json", Data: string(outputData)}
+			buf, err := zipFiles([]OutputFile{file})
+			if err != nil {
+				fmt.Println(err)
+				http.Error(w, "Failed to generate data", http.StatusInternalServerError)
+			}
+
+			outputData = buf
+			w.Header().Set("Content-Type", "application/zip")
 		}
 	case SQL:
 		var sqlFiles []OutputFile

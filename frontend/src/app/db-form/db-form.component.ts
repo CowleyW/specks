@@ -38,16 +38,19 @@ export class DbFormComponent {
   generateData() {
     this.api.generateData(this.tables.toJSON()).subscribe({
       next: (response) => {
-        console.log("Success\n", JSON.stringify(response));
+        console.log("Success\n", response);
 
-        const format: Format = this.dbForm.get('outputFormat')!.value;
-        const converter = ConverterFactory.createConverter(format);
+        let blob = new Blob([response], { type: 'application/zip'});
 
-        if (converter != null) {
-          console.log(`Result: ${converter.convert(response)}`);
-        } else {
-          console.log(format);
-        }
+        const link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+
+        link.download = 'output.zip';
+
+        document.body.appendChild(link);
+        link.click();
+
+        document.body.removeChild(link);
       },
       error: (error) => console.error("Error generating data\n", error)
     });
