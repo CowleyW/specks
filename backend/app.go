@@ -61,8 +61,8 @@ func (app application) generateDataWithLimit(w http.ResponseWriter, r *http.Requ
 	switch spec.OutputFormat {
 	case CSV:
 		var csvFiles []OutputFile
-		for _, table := range dataTables {
-			csvFiles = append(csvFiles, FormatAsCSV(table))
+		for i, table := range dataTables {
+			csvFiles = append(csvFiles, FormatAsCSV(table, spec.TableDescs[i]))
 		}
 
 		if spec.ForPreview {
@@ -102,8 +102,8 @@ func (app application) generateDataWithLimit(w http.ResponseWriter, r *http.Requ
 		}
 	case SQL:
 		var sqlFiles []OutputFile
-		for _, table := range dataTables {
-			sqlFiles = append(sqlFiles, FormatAsSQL(table))
+		for i, table := range dataTables {
+			sqlFiles = append(sqlFiles, FormatAsSQL(table, spec.TableDescs[i]))
 		}
 
 		if spec.ForPreview {

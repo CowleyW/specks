@@ -5,7 +5,7 @@ import "encoding/json"
 type RowEntry interface{}
 
 type RowData struct {
-	Entries map[string]RowEntry
+	Entries []RowEntry
 }
 
 func (rd RowData) MarshalJSON() ([]byte, error) {
@@ -22,8 +22,8 @@ func (rd RowData) HasOverlapConflict(desc TableDesc, rows []RowData) bool {
 
 	for _, row := range rows {
 		anyKeyDistinct := false
-		for _, col := range desc.Columns {
-			if row.Entries[col.Name] != rd.Entries[col.Name] {
+		for i, col := range desc.Columns {
+			if row.Entries[i] != rd.Entries[i] {
 				if col.PrimaryKey {
 					anyKeyDistinct = true
 				}
@@ -32,8 +32,8 @@ func (rd RowData) HasOverlapConflict(desc TableDesc, rows []RowData) bool {
 			}
 		}
 
-		for _, ref := range desc.References {
-			if row.Entries[ref.Name] != rd.Entries[ref.Name] {
+		for i, ref := range desc.References {
+			if row.Entries[i] != rd.Entries[i] {
 				if ref.PrimaryKey {
 					anyKeyDistinct = true
 				}

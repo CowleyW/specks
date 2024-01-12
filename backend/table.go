@@ -33,14 +33,14 @@ func GenerateTableData(desc TableDesc, dataTables []TableData, r *rand.Rand, db 
 		}
 
 		data := RowData{
-			Entries: make(map[string]RowEntry),
+			Entries: []RowEntry{},
 		}
 
 		for _, columnDesc := range desc.Columns {
 			if entry, err := columnDesc.Type.GenerateEntry(desc, row, r, db); err != nil {
 				return t, err
 			} else {
-				data.Entries[columnDesc.Name] = entry
+				data.Entries = append(data.Entries, entry)
 			}
 		}
 
@@ -48,7 +48,7 @@ func GenerateTableData(desc TableDesc, dataTables []TableData, r *rand.Rand, db 
 			if entry, err := referenceDesc.GenerateEntry(dataTables, t, r); err != nil {
 				return t, err
 			} else {
-				data.Entries[referenceDesc.Name] = entry
+				data.Entries = append(data.Entries, entry)
 			}
 		}
 

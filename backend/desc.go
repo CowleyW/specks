@@ -44,8 +44,8 @@ type ReferenceDesc struct {
 	Name string `json:"referenceName"`
 
 	// TableIndex must be less than or equal to the index of the table ReferenceDesc exists in.
-	TableIndex uint   `json:"tableIndex"`
-	ColumnName string `json:"columnName"`
+	TableIndex  uint `json:"tableIndex"`
+	ColumnIndex uint `json:"columnIndex"`
 
 	PrimaryKey bool `json:"referencePrimaryKey"`
 	Unique     bool `json:"referenceUnique"`
@@ -66,7 +66,7 @@ func (rd ReferenceDesc) GenerateEntry(precursors []TableData, current TableData,
 	if tableLen == 0 {
 		return rd.Default, nil
 	} else {
-		return referenceTable.RowData[r.Intn(tableLen)].Entries[rd.ColumnName], nil
+		return referenceTable.RowData[r.Intn(tableLen)].Entries[rd.ColumnIndex], nil
 	}
 }
 

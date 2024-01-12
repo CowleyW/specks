@@ -18,15 +18,20 @@ const (
 	SQL         = "SQL"
 )
 
-func FormatAsCSV(data TableData) OutputFile {
+func FormatAsCSV(data TableData, desc TableDesc) OutputFile {
 	var file OutputFile
 
-	keys := make([]string, len(data.RowData[0].Entries))
+	keys := make([]string, len(desc.Columns)+len(desc.References))
 	i := 0
-	for k := range data.RowData[0].Entries {
-		keys[i] = k
+	for _, col := range desc.Columns {
+		keys[i] = col.Name
 		i += 1
 	}
+	for _, ref := range desc.References {
+		keys[i] = ref.Name
+		i += 1
+	}
+
 	end := i
 
 	// Write the CSV header
@@ -40,10 +45,14 @@ func FormatAsCSV(data TableData) OutputFile {
 	// Write the CSV data
 	for _, data := range data.RowData {
 		i = 0
+		fmt.Println(data.Entries)
+		fmt.Println(len(data.Entries))
 		for _, value := range data.Entries {
 			switch v := value.(type) {
 			case string:
 				builder.WriteString(v)
+			case uint:
+				builder.WriteString(strconv.Itoa(int(v)))
 			case int:
 				builder.WriteString(strconv.Itoa(v))
 			case bool:
@@ -54,6 +63,8 @@ func FormatAsCSV(data TableData) OutputFile {
 				}
 			case nil:
 				builder.WriteString("NULL")
+			default:
+				fmt.Printf("unknown type %T.\n", v)
 			}
 
 			i += 1
@@ -65,20 +76,24 @@ func FormatAsCSV(data TableData) OutputFile {
 		}
 	}
 
-	file.Name = fmt.Sprintf("%s.csv", file.Name)
+	file.Name = fmt.Sprintf("%s.csv", data.Name)
 	file.Data = builder.String()
 
 	return file
 }
 
-func FormatAsSQL(data TableData) OutputFile {
+func FormatAsSQL(data TableData, desc TableDesc) OutputFile {
 	var file OutputFile
 
 	// Get the keys
-	keys := make([]string, len(data.RowData[0].Entries))
+	keys := make([]string, len(desc.Columns)+len(desc.References))
 	i := 0
-	for k := range data.RowData[0].Entries {
-		keys[i] = k
+	for _, col := range desc.Columns {
+		keys[i] = col.Name
+		i += 1
+	}
+	for _, ref := range desc.References {
+		keys[i] = ref.Name
 		i += 1
 	}
 	end := i
@@ -107,6 +122,8 @@ func FormatAsSQL(data TableData) OutputFile {
 				builder.WriteByte('\'')
 				builder.WriteString(strings.Replace(v, "'", "''", -1))
 				builder.WriteByte('\'')
+			case uint:
+				builder.WriteString(strconv.Itoa(int(v)))
 			case int:
 				builder.WriteString(strconv.Itoa(v))
 			case bool:
@@ -128,7 +145,7 @@ func FormatAsSQL(data TableData) OutputFile {
 		}
 	}
 
-	file.Name = fmt.Sprintf("%s.sql", file.Name)
+	file.Name = fmt.Sprintf("%s.sql", data.Name)
 	file.Data = builder.String()
 
 	return file

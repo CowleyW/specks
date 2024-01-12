@@ -78,7 +78,7 @@ export class TablesService {
       referenceName: [`Reference ${referenceNum}`, Validators.required],
       referenceColumn: [null, Validators.required],
       tableIndex: ['', Validators.required],
-      columnName: ['', Validators.required],
+      columnIndex: ['', Validators.required],
       referencePrimaryKey: [false, Validators.required],
       referenceUnique: [false, Validators.required]
     });
@@ -139,13 +139,10 @@ export class TablesService {
 
     referenceForm.get('referenceColumn')!.valueChanges.subscribe((value: string) => {
       // Format: {tableIndex}-{columnIndex}
-      console.log(value);
       const split = value.split("-", 2).map((str) => parseInt(str));
-      const tableIndex = split[0];
-      const columnName = this.getColumns(tableIndex)[split[1]].get('columnName')!.value;
 
-      referenceForm.get('tableIndex')!.setValue(tableIndex);
-      referenceForm.get('columnName')!.setValue(columnName);
+      referenceForm.get('tableIndex')!.setValue(split[0]);
+      referenceForm.get('columnIndex')!.setValue(split[1]);
     });
 
     const table = this.getTable(tableIndex);
@@ -190,7 +187,7 @@ export class TablesService {
             return {
               referenceName: r.get('referenceName')!.value,
               tableIndex: r.get('tableIndex')!.value,
-              columnName: r.get('columnName')!.value,
+              columnIndex: r.get('columnIndex')!.value,
               referencePrimaryKey: r.get('referencePrimaryKey')!.value,
               referenceUnique: r.get('referenceUnique')!.value,
               default: null
