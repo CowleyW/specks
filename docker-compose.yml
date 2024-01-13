@@ -14,6 +14,11 @@ services:
       - "4001:4000"
     links:
       - db
+    networks:
+      - api-interface
+      - database
+    secrets:
+      - db_pw
 
   #############################################################################
   # configure the Angular frontend
@@ -27,14 +32,14 @@ services:
       - backend
     environment:
       - BACKEND_URL=http://backend:4000
+    networks:
+      - api-interface
 
   #############################################################################
   # configure the MySQL container
   db:
-    image: mysql:8
+    build: db/
     container_name: db-prod
-    volumes:
-      - ./db:/docker-entrypoint-initdb.d/:ro
     ports:
       - "3200:3306"
     restart: unless-stopped
@@ -45,6 +50,8 @@ services:
     secrets:
       - db_pw
       - db_root_pw
+    networks:
+      - database
 
 ###############################################################################
 # configure the project secrets
@@ -53,3 +60,9 @@ secrets:
     file: ./secrets/db_pw
   db_root_pw:
     file: ./secrets/db_root_pw
+
+networks:
+  api-interface:
+    driver: bridge
+  database:
+    driver: bridge

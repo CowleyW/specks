@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"strings"
 	"time"
+	"os"
 )
 
 func addCORSHeaders(handler http.Handler) http.Handler {
@@ -37,7 +38,9 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	db, err := openDB(fmt.Sprintf("backend:%s@tcp(db-dev:3306)/specks_db", pw))
+	dbAddr := os.Getenv("DATABASE_ADDRESS")
+
+	db, err := openDB(fmt.Sprintf("backend:%s@tcp(%s)/specks_db", pw, dbAddr))
 	if err != nil {
 		log.Fatalln(err)
 	}
