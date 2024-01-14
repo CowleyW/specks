@@ -8,10 +8,11 @@ services:
   # configure the Go backend container
   backend:
     build: backend/
+    image: specksdev.azurecr.io/backend
     container_name: backend-prod
     restart: unless-stopped
     ports:
-      - "4001:4000"
+      - "4000:4000"
     links:
       - db
     networks:
@@ -24,10 +25,12 @@ services:
   # configure the Angular frontend
   frontend:
     build: frontend/
+    image: specksdev.azurecr.io/frontend
+    domainname: specksdev
     container_name: frontend-prod
     restart: unless-stopped
     ports:
-      - "8080:80"
+      - "80:80"
     links:
       - backend
     environment:
@@ -39,9 +42,10 @@ services:
   # configure the MySQL container
   db:
     build: db/
+    image: specksdev.azurecr.io/db
     container_name: db-prod
     ports:
-      - "3200:3306"
+      - "3306:3306"
     restart: unless-stopped
     environment:
       MYSQL_USER: backend

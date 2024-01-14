@@ -2,6 +2,10 @@
 
 Specks is a web application for generating mock data in common data formats.
 
+## Website
+
+[Specks](specksdev.eastus.azurecontainer.io) website hosted with Microsoft Azure.
+
 ## Self-hosting
 
 1. Install [docker compose](https://docs.docker.com/compose/).
